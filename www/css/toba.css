@@ -1,0 +1,129 @@
+body { 
+    align-text:center;
+    font-size: 14px;
+    font-family: Helvetica, Arial, sans-serif;
+    text-rendering: optimizeLegibility;
+    color: #444;
+    background-image: url("../img/fondo4.png"); //-gris
+    -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+    background-repeat:no-repeat;
+    background-attachment: fixed;
+}
+
+.banner
+{
+    width: 260px;
+    height: 160px;
+    border-radius: 10px 10px 10px 10px;
+    background-image: url("../img/nuevo.png");
+    background-repeat:no-repeat;
+    background-position: center;
+    -webkit-border-radius:10px;
+    -moz-border-radius:10px;
+    border-radius:10px;
+     
+}
+.proyectos
+{
+    text-align: center;
+    position: relative;
+    top: 50%;
+    -ms-transform: translateY(-50%);
+    -webkit-transform: translateY(-50%);
+    transform: translateY(-50%);
+}
+
+.banner.toba_referencia
+{
+    background-image: url("../img/toba_referencia.png");
+    background-repeat:no-repeat;
+    background-position: center;
+}
+.banner.gu_kena
+{
+    background-image: url("../img/gu-kena.png");
+    background-repeat:no-repeat;
+    background-position: center;
+}
+.banner.onelogin
+{
+    background-image: url("../img/onelogin.png");
+    background-repeat:no-repeat;
+    background-position: center;
+}
+.banner.designa
+{
+    background-image: url("../img/designaciones2.png");
+    background-repeat:no-repeat;
+    background-position: center;
+}
+.banner.mapuche
+{
+    background-image: url("../img/mapuche.png");
+    background-repeat:no-repeat;
+    background-position: center;
+}
+.banner.mocovi_dev
+{
+    background-image: url("../img/mocovi_dev2.png");
+    background-repeat:no-repeat;
+    background-position: center;
+}
+.banner.pilaga
+{
+    background-image: url("../img/pilaga.png");
+    background-repeat:no-repeat;
+    background-position: center;
+}
+.banner.presupuesto
+{
+    background-image: url("../img/presupuesto2.png");
+    background-repeat:no-repeat;
+    background-position: center;
+}
+.banner.rukaja
+{
+    background-image: url("../img/rukaja.png");
+    background-repeat:no-repeat;
+    background-position: center;
+}
+.banner.sed
+{
+    background-image: url("../img/sed.png");
+    background-repeat:no-repeat;
+    background-position: center;
+}
+.banner.tehuelche
+{
+    background-image: url("../img/tehuelche.png");
+    background-repeat:no-repeat;
+    background-position: center;
+}
+
+.proyectos
+{
+    //background: #245580;
+    background-image: url("../img/muestra.png");
+    background-repeat:no-repeat;
+    background-position: center;
+    font-size: 30px;
+    text-transform: uppercase;
+    font-style: italic;
+    color: white;
+    width: 310px;
+    height: 160px;
+    opacity: 0;    
+    line-height: 160px;
+}
+.proyectos:hover{
+    opacity: 0.9;
+} 
+/*
+.banner.blur{
+filter: blur(3px);
+transform: scale(0.95);
+}*/
+
