@@ -6,7 +6,7 @@ echo "<link rel=\"stylesheet\" href=\"css/bootstrap.min.css\">";
 
 
 echo '<div align=\'center\'>';
-$im=toba_recurso::imagen_proyecto('oneloginTop.png',800,400);
+$im=toba_recurso::imagen_proyecto('oneloginTop2.png',1500,500);
 echo $im;
 //echo '<img src='.$im.'class=\'responsive-image\'>';
 
