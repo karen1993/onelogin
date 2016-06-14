@@ -11,7 +11,7 @@ class toba_onelog_uncoma extends toba_tp_basico
 		echo "
 			<style type='text/css'>
 				.cuerpo {
-					
+					    margin-top: 10%;
 				}
                                 body { 
                                     //top:20%;
