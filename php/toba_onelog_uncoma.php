@@ -14,14 +14,14 @@ class toba_onelog_uncoma extends toba_tp_basico
 					
 				}
                                 body { 
-                                    top:20%;
+                                    //top:20%;
                                     align-text:center;
-                                    font-size: 14px;
-                                    font-size: 1rem;
-                                    font-family: Helvetica, Arial, sans-serif;
-                                    text-rendering: optimizeLegibility;
-                                    color: #444  ; 
-                                    type='text/css'; 
+                                    //font-size:50px;
+                                    //font-size: 1rem;
+                                    //font-family: Helvetica, Arial, sans-serif;
+                                    //text-rendering: optimizeLegibility;
+                                    color: #FFFFFF  ; 
+                                     
                                     background-image: url(\"img/unco.png\");
                                     background-repeat:no-repeat;
                                     background-attachment: fixed;
@@ -73,6 +73,22 @@ class toba_onelog_uncoma extends toba_tp_basico
                                     display: inline-block;
                                     position: relative;
                                     transition: 0.5s;
+                                }
+                                .ei-base{  border:none;
+                                }
+                                #js_ci_1000700_cont
+                                {   background-color: transparent;  //color tabla
+                                    
+                                }
+                                .ei-barra-sup
+                                {   display:none;       //cabecera tabla
+                                }
+                                .ei-form-fila
+                                {   color: #FFFFFF;
+                                }
+                                .ei-form-etiq, .ei-form-etiq-oblig
+                                {   padding:15px;
+                                font-size: 20px;
                                 }
                                 button span:after 
                                 {
