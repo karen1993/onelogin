@@ -4,13 +4,24 @@
  */
 echo "<link rel=\"stylesheet\" href=\"css/bootstrap.min.css\">";
 
-
-echo '<div align=\'center\'>';
-$im=toba_recurso::imagen_proyecto('oneloginTop2.png',1500,500);
+echo '<div class="contenedor" align=\'center\'>';
+echo '<div class="titulo">';
+$im=toba_recurso::imagen_proyecto('oneloginTop5.png',1750,500);
 echo $im;
-//echo '<img src='.$im.'class=\'responsive-image\'>';
+echo '</div>';
+echo '<div class="cabecera" align=\'center\'>';
+echo '<a href="#" class="enc-usuario" title="editar Usuario" onclick="">';
+$usu=toba_recurso::imagen_proyecto('usuario2.png',60,60);
+echo $usu;
+echo '</a>';
+echo '<a href="#" class="enc-salir" title="Cerrar la sesion" onclick="javascript:salir()">';
+$exi=toba_recurso::imagen_proyecto('salir2.png',60,60);
+echo $exi;
+echo '</a>';
+echo '</div>';
 
 echo '</div>';
+
 echo '<div align=\'center\'>';
 $proyectos = toba::instancia()->get_proyectos_accesibles();
 
@@ -26,16 +37,20 @@ echo toba_js::cerrar();
 
 echo '<br><br>';
 
-
+$proyectosMostrados=array();
 $cant = count($datos);
 $i = 0;
 for ($i; $i < $cant; $i++) {
-    $ban=$i%2;
-    echo '<div class=\'banner '.$proyectos[$i][0].' col-xs-12 col-sm-6 col-lg-4 \' id=\'pos'.$ban.'\' onClick="vinculador.ir_a_proyecto(\''.$proyectos[$i][0].'\')">';
-    echo '<div class=\'proyectos\'>'.$proyectos[$i][0].'</div>';
-    //echo toba_form::button($proyectos[$i][0],$proyectos[$i][0],'onClick="vinculador.ir_a_proyecto(\''.$proyectos[$i][0].'\')"');
-//    echo '<div class=\'bgimg\' align=\'center\' onClick="vinculador.ir_a_proyecto(\''.$proyectos[$i][0].'\')">Proyecto</div>';
-    echo '</div>';
+    if(in_array($proyectos[$i][0], $proyectosMostrados)==FALSE)
+    {
+        array_push($proyectosMostrados, $proyectos[$i][0]);
+        $ban=$i%2;
+        echo '<div class=\'banner '.$proyectos[$i][0].' col-xs-12 col-sm-6 col-lg-4 \' id=\'pos'.$ban.'\' onClick="vinculador.ir_a_proyecto(\''.$proyectos[$i][0].'\')">';
+        echo '<div class=\'proyectos\'>'.$proyectos[$i][0].'</div>';
+        //echo toba_form::button($proyectos[$i][0],$proyectos[$i][0],'onClick="vinculador.ir_a_proyecto(\''.$proyectos[$i][0].'\')"');
+        //echo '<div class=\'bgimg\' align=\'center\' onClick="vinculador.ir_a_proyecto(\''.$proyectos[$i][0].'\')">Proyecto</div>';
+        echo '</div>';
+    }
 }
 
 echo '</div>';

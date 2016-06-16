@@ -20,7 +20,7 @@ class toba_onelog_uncoma extends toba_tp_basico
                                     //font-size: 1rem;
                                     //font-family: Helvetica, Arial, sans-serif;
                                     //text-rendering: optimizeLegibility;
-                                    color: #FFFFFF  ; 
+                                    //color: #FFFFFF  ; 
                                      
                                     background-image: url(\"img/unco.png\");
                                     background-repeat:no-repeat;
