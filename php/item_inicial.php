@@ -4,13 +4,14 @@
  */
 echo "<link rel=\"stylesheet\" href=\"css/bootstrap.min.css\">";
 
+
 echo '<div class="contenedor" align=\'center\'>';
 echo '<div class="titulo">';
 $im=toba_recurso::imagen_proyecto('oneloginTop5.png',1750,500);
 echo $im;
 echo '</div>';
 echo '<div class="cabecera" align=\'center\'>';
-echo '<a href="#" class="enc-usuario" title="editar Usuario" onclick="">';
+echo '<a href="#" class="enc-usuario" title="Usuario" onclick="a_Operacion()">';
 $usu=toba_recurso::imagen_proyecto('usuario2.png',60,60);
 echo $usu;
 echo '</a>';
@@ -55,10 +56,17 @@ for ($i; $i < $cant; $i++) {
 
 echo '</div>';
 
+echo toba_js::abrir();
+echo 'function a_Operacion(){';
 
-/*
- * *************   BOOTSTRAP    *******************
- */
-//echo "<script src=\"js/jquery.js\"></script>";
-//echo "<script src=\"js/bootstrap.min.js\"></script>";
+//    echo toba_js::abrir();
+    //echo 'alert(\'hola\')';
+    echo  'return toba.ir_a_operacion("onelogin", "1000301", false)';
+//  echo toba_js::cerrar();
+    
+    //toba::vinculador()->navegar_a("", "1000301", true);
+    
+echo '}';    
+echo toba_js::cerrar();
+echo "<script src=\"js/jquery.js\"></script>";
 ?>
