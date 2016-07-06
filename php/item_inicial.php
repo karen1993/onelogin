@@ -6,6 +6,14 @@ echo "<link rel=\"stylesheet\" href=\"css/bootstrap.min.css\">";
 
 
 echo '<div class="contenedor" align=\'center\'>';
+//echo toba::usuario()->get_nombre();
+//echo toba::usuario()->existe_usuario('toba');
+//ei_arbol(gestion_arai_usuarios::get_nombre_usuario_arai(toba::usuario()->get_id()));   //imprime datos
+//$aca=toba::instancia()->get_info_usuario(toba::usuario()->get_id());
+$bdtoba=toba::instancia()->get_db();
+//$sql = "SELECT email FROM apex_usuario WHERE usuario='".toba::usuario()->get_id()."'";
+//ei_arbol($bdtoba->consultar($sql)[0]);
+
 echo '<div class="titulo">';
 $im=toba_recurso::imagen_proyecto('oneloginTop5.png',1750,500);
 echo $im;
@@ -23,7 +31,7 @@ echo '</div>';
 
 echo '</div>';
 
-echo '<div align=\'center\'>';
+echo '<div class=\'container\' align=\'center\'>';
 $proyectos = toba::instancia()->get_proyectos_accesibles();
 
 $datos = rs_convertir_asociativo($proyectos, array(0), 1);
@@ -37,7 +45,7 @@ echo 'var url_proyectos = ' . toba_js::arreglo(toba::instancia()->get_url_proyec
 echo toba_js::cerrar();
 
 echo '<br><br>';
-
+//ei_arbol($proyectos);
 $proyectosMostrados=array();
 $cant = count($datos);
 $i = 0;
@@ -46,27 +54,36 @@ for ($i; $i < $cant; $i++) {
     {
         array_push($proyectosMostrados, $proyectos[$i][0]);
         $ban=$i%2;
-        echo '<div class=\'banner '.$proyectos[$i][0].' col-xs-12 col-sm-6 col-lg-4 \' id=\'pos'.$ban.'\' onClick="vinculador.ir_a_proyecto(\''.$proyectos[$i][0].'\')">';
+        echo '<div class=\'banner '.$proyectos[$i][0].' col-xs-12 col-sm-6 col-lg-4 \'  onClick="vinculador.ir_a_proyecto(\''.$proyectos[$i][0].'\')">';
         echo '<div class=\'proyectos\'>'.$proyectos[$i][0].'</div>';
         //echo toba_form::button($proyectos[$i][0],$proyectos[$i][0],'onClick="vinculador.ir_a_proyecto(\''.$proyectos[$i][0].'\')"');
         //echo '<div class=\'bgimg\' align=\'center\' onClick="vinculador.ir_a_proyecto(\''.$proyectos[$i][0].'\')">Proyecto</div>';
         echo '</div>';
     }
 }
+echo '<div class=\'banner resultados col-xs-12 col-sm-6 col-lg-4 \' onclick="window.location=\'http://gukena.fi.uncoma.edu.ar/resultados/\';" >';
+echo '<div class=\'proyectos\'>Resultados</div>';
+echo '</div>';
 
+
+echo '</div>';
+
+echo '<div class=\'pie\'>';
+    echo '<a href="#" class="pedco" id=\'pedco\' title="Pedco" onclick="">';
+    $pedco=toba_recurso::imagen_proyecto('logo-pedco.png',300,100);
+    echo $pedco;
+    echo '</a>';
 echo '</div>';
 
 echo toba_js::abrir();
 echo 'function a_Operacion(){';
 
-//    echo toba_js::abrir();
-    //echo 'alert(\'hola\')';
     echo  'return toba.ir_a_operacion("onelogin", "1000301", false)';
-//  echo toba_js::cerrar();
-    
-    //toba::vinculador()->navegar_a("", "1000301", true);
-    
+
 echo '}';    
 echo toba_js::cerrar();
-echo "<script src=\"js/jquery.js\"></script>";
+
+//ei_arbol($bdtoba->get_lista_tablas());
+//$sql = "SELECT * FROM apex_usuario";
+//ei_arbol($bdtoba->consultar($sql));
 ?>

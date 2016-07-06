@@ -48,6 +48,12 @@ body {
     background-repeat:no-repeat;
     background-position: center;
 }
+.banner.resultados
+{
+    background-image: url("../img/resultados.png");
+    background-repeat:no-repeat;
+    background-position: center;
+}
 .banner.onelogin
 {
     background-image: url("../img/onelogin.png");
@@ -68,7 +74,7 @@ body {
 }
 .banner.descentralizado
 {                       // VERIFICAR NOMBRE
-    background-image: url("../img/mocovi_dev3.png");
+    background-image: url("../img/descentralizado.png");
     background-repeat:no-repeat;
     background-position: center;
 }
@@ -99,6 +105,12 @@ body {
 .banner.tehuelche
 {
     background-image: url("../img/tehuelche.png");
+    background-repeat:no-repeat;
+    background-position: center;
+}
+.banner.libro_unco
+{
+    background-image: url("../img/librounco.png");
     background-repeat:no-repeat;
     background-position: center;
 }
@@ -146,10 +158,19 @@ transform: scale(0.95);
     height: 80px;
     text-align: right;
     
+    -webkit-transition: all 1s ease-in-out;
+-moz-transition: all 1s ease-in-out;
+-o-transition: all 1s ease-in-out;
+transition: all 1s ease-in-out;
 }
 .cabecera:hover{
-    right: 0%; 
-    transition: all 2s ease;
+/*    right: 0%; 
+    transition: all 2s ease;*/
+-webkit-transform: translate(-140px, 0px);
+-moz-transform: translate(-140px, 0px);
+-o-transform: translate(-140px, 0px);
+-ms-transform: translate(-140px, 0px);
+transform: translate(-140px, 0px);
     
     }
 .contenedor
@@ -171,4 +192,18 @@ transform: scale(0.95);
 {
     opacity: 0.3;
     transform: scale(1.2);
+}
+.pedco:hover
+{
+    transform: scale(1.5);    
+}
+.pie
+{
+    width: 100%;
+    height: 50px;
+    text-align: right;
+    background-color: whitesmoke;
+    position: absolute;
+    //margin-top: 40px;
+    //padding:10px;
 }
