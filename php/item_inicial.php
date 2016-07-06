@@ -17,6 +17,8 @@ $bdtoba=toba::instancia()->get_db();
 echo '<div class="titulo">';
 $im=toba_recurso::imagen_proyecto('oneloginTop5.png',1750,500);
 echo $im;
+//$im2=toba_recurso::imagen_proyecto('iconoOne4.png',100,100);
+//echo $im2;
 echo '</div>';
 echo '<div class="cabecera" align=\'center\'>';
 echo '<a href="#" class="enc-usuario" title="Usuario" onclick="a_Operacion()">';
@@ -69,10 +71,12 @@ echo '</div>';
 echo '</div>';
 
 echo '<div class=\'pie\'>';
-    echo '<a href="#" class="pedco" id=\'pedco\' title="Pedco" onclick="">';
-    $pedco=toba_recurso::imagen_proyecto('logo-pedco.png',300,100);
-    echo $pedco;
-    echo '</a>';
+    echo '<div class=\'pedco\'>';
+        echo '<a href="#" title="Pedco" onclick="window.location=\'http://pedco.uncoma.edu.ar/\';">';
+        $pedco=toba_recurso::imagen_proyecto('logo-pedco.png',300,100);
+        echo $pedco;
+        echo '</a>';
+    echo '</div>';
 echo '</div>';
 
 echo toba_js::abrir();
