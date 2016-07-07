@@ -17,7 +17,7 @@ $bdtoba=toba::instancia()->get_db();
 echo '<div class="titulo">';
 $im=toba_recurso::imagen_proyecto('oneloginTop5.png',1750,500);
 echo $im;
-//$im2=toba_recurso::imagen_proyecto('iconoOne4.png',100,100);
+//$im2=toba_recurso::imagen_proyecto('iconoOne4.png',70,70);
 //echo $im2;
 echo '</div>';
 echo '<div class="cabecera" align=\'center\'>';
