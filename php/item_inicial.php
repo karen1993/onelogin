@@ -70,14 +70,14 @@ echo '</div>';
 
 echo '</div>';
 
-echo '<div class=\'pie\'>';
+echo '<footer class=\'pie\'>';
     echo '<div class=\'pedco\'>';
         echo '<a href="#" title="Pedco" onclick="window.location=\'http://pedco.uncoma.edu.ar/\';">';
         $pedco=toba_recurso::imagen_proyecto('logo-pedco.png',300,100);
         echo $pedco;
         echo '</a>';
     echo '</div>';
-echo '</div>';
+echo '</footer>';
 
 echo toba_js::abrir();
 echo 'function a_Operacion(){';
