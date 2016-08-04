@@ -19,7 +19,7 @@ class toba_onelog_usuario extends toba_tp_basico
                                 }
                                 .en-pagina
                                 {
-                                    color: black;
+                                    color: white;
                                 }
                                 
 			</style>
@@ -33,7 +33,8 @@ class toba_onelog_usuario extends toba_tp_basico
 //		echo "<div class='login-titulo'>". toba_recurso::imagen_proyecto("logo.gif",true);
 //		echo "<div>versi�n ".toba::proyecto()->get_version()."</div>";
 //		echo "</div>";
-		echo "\n<div align='center' class='cuerpo'>\n";		
+		//echo "\n<div align='center' class='cuerpo'>\n";		
+                echo "\n<div align='center' class='wrapper'>\n";
 	}
 
 	function post_contenido()
@@ -41,7 +42,7 @@ class toba_onelog_usuario extends toba_tp_basico
 		echo "</div>";		
 		
                 //echo '<footer>';
-                echo '<div class=\'define\'>';
+                echo '<div class="footer">';
                 echo "<div class='login-pie'>";
 		echo "<div class='en-pagina'>Desarrollado por <strong><a href='http://www.siu.edu.ar' style='text-decoration: none' target='_blank'>SIU</a></strong><div>2002-".date('Y')."</div></div>";
 		echo "</div>";

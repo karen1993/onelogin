@@ -11,6 +11,8 @@ body {
   background-size: cover;
     background-repeat:no-repeat;
     background-attachment: fixed;
+    
+    height: 100%;
 }
 
 .banner
@@ -211,11 +213,30 @@ transform: translate(-140px, 0px);
 -ms-transform: scale(1.2);
 transform: scale(1.2);   
 }
-.pie
+.prePie
+{
+    height: 50px;
+}
+/*footer
 {
     width: 100%;
-    height: 50px;
     text-align: right;
     background-color: rgba(67, 87, 95, 0.6);
-    position: absolute;
+    /*position: absolute;
+    bottom: 0;
+}*/
+
+html{
+height: 100%;
 }
+.wrapper {
+min-height: 100%;
+height: auto !important;
+height: 100%;
+/*margin: 0 auto -4em;*/
+}
+.footer, .push {
+height: 4em;
+background-color: rgba(67, 87, 95, 0.6);
+}
+

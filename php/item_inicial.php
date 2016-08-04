@@ -6,7 +6,7 @@ echo "<link rel=\"stylesheet\" href=\"css/bootstrap.min.css\">";
 
 
 echo '<div class="contenedor" align=\'center\'>';
-//echo toba::usuario()->get_nombre();
+
 //echo toba::usuario()->existe_usuario('toba');
 //ei_arbol(gestion_arai_usuarios::get_nombre_usuario_arai(toba::usuario()->get_id()));   //imprime datos
 //$aca=toba::instancia()->get_info_usuario(toba::usuario()->get_id());
@@ -33,7 +33,9 @@ echo '</div>';
 
 echo '</div>';
 
+echo '<div class="wrapper">';
 echo '<div class=\'container\' align=\'center\'>';
+
 $proyectos = toba::instancia()->get_proyectos_accesibles();
 
 $datos = rs_convertir_asociativo($proyectos, array(0), 1);
@@ -69,15 +71,14 @@ echo '</div>';
 
 
 echo '</div>';
+echo '</div>';
 
-echo '<footer class=\'pie\'>';
-    echo '<div class=\'pedco\'>';
+echo '<div class="footer">';
         echo '<a href="#" title="Pedco" onclick="window.location=\'http://pedco.uncoma.edu.ar/\';">';
-        $pedco=toba_recurso::imagen_proyecto('logo-pedco.png',300,100);
+        $pedco=toba_recurso::imagen_proyecto('logo-pedco2.png',300,100);
         echo $pedco;
         echo '</a>';
-    echo '</div>';
-echo '</footer>';
+echo '</div>';
 
 echo toba_js::abrir();
 echo 'function a_Operacion(){';
