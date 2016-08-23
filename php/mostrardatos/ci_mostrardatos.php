@@ -2,12 +2,14 @@
 class ci_mostrardatos extends onelogin_ci
 {
 	//---- Cuadro -----------------------------------------------------------------------
-
+            
 	
 
 	function evt__cuadro__seleccion($datos)
 	{
 		$this->dep('datos')->cargar($datos);
+                
+            
 	}
 
 	//---- Formulario -------------------------------------------------------------------
@@ -40,6 +42,7 @@ class ci_mostrardatos extends onelogin_ci
             $bdtoba=toba::instancia()->get_db();
             $sql ='UPDATE desarrollo.apex_usuario SET nombre =\''.$nomApp.'\', email=\''.$datos['email'].'\' WHERE usuario=\''.toba::usuario()->get_id().'\'';
             $bdtoba->consultar($sql);
+            toba::notificacion()->agregar('Modificacion realizada con Exito!', 'info');
                        
         }
 
@@ -69,6 +72,7 @@ class ci_mostrardatos extends onelogin_ci
                   toba_usuario::verificar_clave_no_utilizada($datos['claveNueva'], $usuario, $ultimas_claves);
                   toba_usuario::reemplazar_clave_vencida($datos['claveNueva'], $usuario, $dias);
                   $this->es_cambio_contrasenia = true;                //Bandera para el post_eventos
+                  toba::notificacion()->agregar('Modificacion realizada con Exito!', 'info');
               } catch(toba_error_pwd_conformacion_invalida $e) {
                   toba::logger()->info($e->getMessage());
                   toba::notificacion()->agregar($e->getMessage(), 'error');

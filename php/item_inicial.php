@@ -75,7 +75,7 @@ echo '</div>';
 
 echo '<div class="footer">';
         echo '<a href="#" title="Pedco" onclick="window.location=\'http://pedco.uncoma.edu.ar/\';">';
-        $pedco=toba_recurso::imagen_proyecto('logo-pedco2.png',300,100);
+        $pedco=toba_recurso::imagen_proyecto('logo-pedco3.png',400,200);
         echo $pedco;
         echo '</a>';
 echo '</div>';

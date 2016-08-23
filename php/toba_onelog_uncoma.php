@@ -14,13 +14,13 @@ class toba_onelog_uncoma extends toba_tp_basico
 					    margin-top: 10%;
 				}
                                 body { 
-                                    //top:20%;
+                                    /*top:20%;*/
                                     align-text:center;
-                                    //font-size:50px;
-                                    //font-size: 1rem;
-                                    //font-family: Helvetica, Arial, sans-serif;
-                                    //text-rendering: optimizeLegibility;
-                                    //color: #FFFFFF  ; 
+                                    /*font-size:50px;
+                                    font-size: 1rem;
+                                    font-family: Helvetica, Arial, sans-serif;
+                                    text-rendering: optimizeLegibility;
+                                    color: #FFFFFF  ; */
                                      
                                     background-image: url(\"img/unco.png\");
                                     background-repeat:no-repeat;
@@ -77,7 +77,7 @@ class toba_onelog_uncoma extends toba_tp_basico
                                 .ei-base{  border:none;
                                 }
                                 #js_ci_1000700_cont
-                                {   background-color: transparent;  //color tabla
+                                {   background-color: transparent;  /*color tabla*/
                                     
                                 }
                                 .ei-barra-sup
@@ -107,6 +107,10 @@ class toba_onelog_uncoma extends toba_tp_basico
                                 {
                                     opacity: 1;
                                     right: 0;
+                                }
+                                .ci-cuerpo
+                                {
+                                    background: transparent !important;
                                 }
 			</style>
 		";

@@ -21,10 +21,16 @@ class toba_onelog_usuario extends toba_tp_basico
                                 {
                                     color: white;
                                 }
-                                
+                            .div-editor
+                            
 			</style>
 		";
-		echo "<div id='barra-superior' class='barra-superior-login'>\n";		
+                echo "<div id='titulo'align=center>";
+                $im=toba_recurso::imagen_proyecto('oneloginTop5.png',1200,400);
+                echo $im;
+                echo "</div>";
+		echo "<div id='barra-superior' class='barra-superior-login'>\n";
+                
 	}	
 
 	function pre_contenido()
@@ -44,7 +50,7 @@ class toba_onelog_usuario extends toba_tp_basico
                 //echo '<footer>';
                 echo '<div class="footer">';
                 echo "<div class='login-pie'>";
-		echo "<div class='en-pagina'>Desarrollado por <strong><a href='http://www.siu.edu.ar' style='text-decoration: none' target='_blank'>SIU</a></strong><div>2002-".date('Y')."</div></div>";
+		echo "<div class='en-pagina'>Desarrollado por <strong><a class='siu' href='http://www.siu.edu.ar' style='text-decoration: none' color:#1a6aff target='_blank'>SIU</a></strong><div>2002-".date('Y')."</div></div>";
 		echo "</div>";
                 
                 echo '</div>';
