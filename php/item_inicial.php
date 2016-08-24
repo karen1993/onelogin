@@ -7,7 +7,7 @@ echo "<link rel=\"stylesheet\" href=\"css/bootstrap.min.css\">";
 
 echo '<div class="contenedor" align=\'center\'>';
 
-//echo toba::usuario()->existe_usuario('toba');
+//echo toba::usuario()->get_nombre();
 //ei_arbol(gestion_arai_usuarios::get_nombre_usuario_arai(toba::usuario()->get_id()));   //imprime datos
 //$aca=toba::instancia()->get_info_usuario(toba::usuario()->get_id());
 $bdtoba=toba::instancia()->get_db();
