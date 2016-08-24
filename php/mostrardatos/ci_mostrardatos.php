@@ -29,8 +29,8 @@ class ci_mostrardatos extends onelogin_ci
                 $arr['apellido']=$separados[1];
                 $arr['usuario']=toba::usuario()->get_id();
                 
-                //$sql = "SELECT email FROM apex_usuario WHERE usuario='".toba::usuario()->get_id()."'";
-                //$mail=$bdtoba->consultar($sql)[0];
+                $sql = "SELECT email FROM apex_usuario WHERE usuario='".toba::usuario()->get_id()."'";
+                $mail=$bdtoba->consultar($sql)[0];
 //                echo gettype($mail);
 //                echo sizeof($mail, $mode);
                 if(isset($mail)){
