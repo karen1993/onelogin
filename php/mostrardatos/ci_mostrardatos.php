@@ -18,26 +18,26 @@ class ci_mostrardatos extends onelogin_ci
 	{
             ini_set('error_reporting', E_ALL);      //Esto para que en el Server, como esta en produccion, largue errores que esten pasando..
             
-            $bdtoba=toba::instancia()->get_db();
+            //$bdtoba=toba::instancia()->get_db();
             //$sql1 = "SELECT nombre FROM desarrollo.apex_usuario WHERE usuario='".toba::usuario()->get_id()."'";
                 //$nomyapp=$bdtoba->consultar($sql1)[0];
-                $nomyapp=toba::usuario()->get_nombre();
+                //$nomyapp=toba::usuario()->get_nombre();
                 
-                $separados=explode(' ',$nomyapp);
+                //$separados=explode(' ',$nomyapp);
                 //ei_arbol($separados);
-                $arr['nombre']=$separados[0];
+                /*$arr['nombre']=$separados[0];
                 $arr['apellido']=$separados[1];
                 $arr['usuario']=toba::usuario()->get_id();
-                
+                */
                 //$sql = "SELECT email FROM apex_usuario WHERE usuario='".toba::usuario()->get_id()."'";
                 //$mail=$bdtoba->consultar($sql)[0];
 //                echo gettype($mail);
 //                echo sizeof($mail, $mode);
-                if(isset($mail)){
+                /*if(isset($mail)){
                     $arr['email']=  implode($mail);
-                }
+                }*/
                 
-                return $arr;
+                //return $arr;
 	}
         function evt__formulario__modificacion($datos)
 	{
