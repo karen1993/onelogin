@@ -9,9 +9,9 @@ INSERT INTO apex_fuente_datos (proyecto, fuente_datos, descripcion, descripcion_
 	'onelogin', --descripcion_corta
 	'postgres7', --fuente_datos_motor
 	NULL, --host
-	NULL, --punto_montaje
-	NULL, --subclase_archivo
-	NULL, --subclase_nombre
+	'1000004', --punto_montaje
+	'extension_toba/fuente.php', --subclase_archivo
+	'fuente', --subclase_nombre
 	NULL, --orden
 	NULL, --schema
 	'onelogin', --instancia_id

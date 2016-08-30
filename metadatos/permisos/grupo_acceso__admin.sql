@@ -29,3 +29,12 @@ INSERT INTO apex_usuario_grupo_acc_item (proyecto, usuario_grupo_acc, item_id, i
 	'2'  --item
 );
 --- FIN Grupo de desarrollo 0
+
+--- INICIO Grupo de desarrollo 1
+INSERT INTO apex_usuario_grupo_acc_item (proyecto, usuario_grupo_acc, item_id, item) VALUES (
+	'onelogin', --proyecto
+	'admin', --usuario_grupo_acc
+	NULL, --item_id
+	'1000301'  --item
+);
+--- FIN Grupo de desarrollo 1
