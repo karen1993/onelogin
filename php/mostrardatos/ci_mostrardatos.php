@@ -41,17 +41,20 @@ class ci_mostrardatos extends onelogin_ci
 	}
         function evt__formulario__modificacion($datos)
 	{
+            /*
             $nomApp=$datos['nombre'].' '.$datos['apellido'];
             //          
             $bdtoba=toba::instancia()->get_db();
             $sql ='UPDATE desarrollo.apex_usuario SET nombre =\''.$nomApp.'\', email=\''.$datos['email'].'\' WHERE usuario=\''.toba::usuario()->get_id().'\'';
             $bdtoba->consultar($sql);
             toba::notificacion()->agregar('Modificacion realizada con Exito!', 'info');
-                       
+                */    
         }
 
 	function evt__cambioClave__bot_aceptar($datos)
 	{
+            ini_set('error_reporting', E_ALL);      //Esto para que en el Server, como esta en produccion, largue errores que esten pasando..
+            
             if($datos['claveNueva']==$datos['repiteClaveNueva'])
             {
             $usuario=toba::usuario()->get_id();;
@@ -96,6 +99,8 @@ class ci_mostrardatos extends onelogin_ci
 
 	function evt__cambioClave__bot_cancelar()
 	{
+            ini_set('error_reporting', E_ALL);      //Esto para que en el Server, como esta en produccion, largue errores que esten pasando..
+            
 		$this->dep('datos')->eliminar_todo();
 		$this->resetear();
 	}
