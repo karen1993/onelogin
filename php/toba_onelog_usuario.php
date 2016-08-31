@@ -27,6 +27,7 @@ class toba_onelog_usuario extends toba_tp_basico
 		";
                 echo "<div id='titulo'align=center>";
                 $im=toba_recurso::imagen_proyecto('oneloginTop5.png',1200,400);
+                
                 echo $im;
                 
                 echo "ME CARGO SOLO EL TIPO PAGINA?";

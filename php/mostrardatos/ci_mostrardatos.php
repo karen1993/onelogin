@@ -11,7 +11,7 @@ class ci_mostrardatos extends onelogin_ci
 
 	function conf__formulario(toba_ei_formulario $form)
 	{
-            ini_set('error_reporting', E_ALL);      //Esto para que en el Server, como esta en produccion, largue errores que esten pasando..
+            //ini_set('error_reporting', E_ALL);      //Esto para que en el Server, como esta en produccion, largue errores que esten pasando..
             
             $bdtoba=toba::instancia()->get_db();
             //$sql1 = "SELECT nombre FROM desarrollo.apex_usuario WHERE usuario='".toba::usuario()->get_id()."'";
@@ -25,7 +25,8 @@ class ci_mostrardatos extends onelogin_ci
                 $arr['usuario']=toba::usuario()->get_id();
                 
                 $sql = "SELECT email FROM apex_usuario WHERE usuario='".toba::usuario()->get_id()."'";
-                $mail=$bdtoba->consultar($sql)[0];
+                $mail=$bdtoba->consultar($sql);
+                $mail=$mail[0];
 //                echo gettype($mail);
 //                echo sizeof($mail, $mode);
                 if(isset($mail)){

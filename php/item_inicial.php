@@ -89,7 +89,7 @@ echo toba_js::abrir();
 echo 'function a_Operacion(){';
 
     echo  'return toba.ir_a_operacion("onelogin", "1000301", false)';
-
+    
 echo '}';    
 echo toba_js::cerrar();
 
