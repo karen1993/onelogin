@@ -30,8 +30,8 @@ class toba_onelog_usuario extends toba_tp_basico
                 echo $im;
                 
                 echo "ME CARGO SOLO EL TIPO PAGINA?";
-                echo "</div>";
-		echo "<div id='barra-superior' class='barra-superior-login'>\n";
+                echo "</div>\n";
+		//echo "<div id='barra-superior' class='barra-superior-login'>\n";
                 
 	}	
 
