@@ -5,12 +5,7 @@ class ci_mostrardatos extends onelogin_ci
             
 	
 
-	function evt__cuadro__seleccion($datos)
-	{
-		$this->dep('datos')->cargar($datos);
-                
-            
-	}
+	
 
 	//---- Formulario -------------------------------------------------------------------
 

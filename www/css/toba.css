@@ -235,6 +235,7 @@ height: 100%;
 .footer, .push {
 height: 80px;
 background-color: #002633;
+text-align:right;
 }
 .siu
 {
