@@ -74,14 +74,16 @@ echo '</div>';
 echo '</div>';
 
 echo '<div class="footer">';
-        echo '<a href="#" title="Pedco" onclick="window.location=\'http://pedco.uncoma.edu.ar/\';">';
-        $pedco=toba_recurso::imagen_proyecto('logo-pedco3.png',200,100);
-        echo '</a>';
+        
         echo "<div class='login-pie'>";
         echo "<div>Desarrollado por <strong><a href='http://euclides.uncoma.edu.ar/' style='text-decoration: none' target='_blank'>EUCLIDES</a></strong></div>
 			<div>2002-".date('Y')."</div>";
         echo '</div>';
+        echo '<a href="#" title="Pedco" onclick="window.location=\'http://pedco.uncoma.edu.ar/\';">';
+        $pedco=toba_recurso::imagen_proyecto('logo-pedco3.png',200,100);
         echo $pedco;
+        echo '</a>';
+        
         
 echo '</div>';
 
