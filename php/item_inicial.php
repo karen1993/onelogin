@@ -51,7 +51,7 @@ echo toba_js::cerrar();
 echo '<br><br>';
 //ei_arbol($proyectos);
 $proyectosMostrados=array();
-$cant = count($datos);
+$cant = count($proyectos);
 $i = 0;
 for ($i; $i < $cant; $i++) {
     if(in_array($proyectos[$i][0], $proyectosMostrados)==FALSE)
