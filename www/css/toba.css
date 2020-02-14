@@ -116,7 +116,12 @@ body {
     background-repeat:no-repeat;
     background-position: center;
 }
-
+.banner.extension
+{
+    background-image: url("../img/extension.png");
+    background-repeat:no-repeat;
+    background-position: center;
+}
 .proyectos
 {
     //background: #245580;
