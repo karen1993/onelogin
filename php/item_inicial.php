@@ -13,7 +13,6 @@ echo '<div class="contenedor" align=\'center\'>';
 $bdtoba=toba::instancia()->get_db();
 //$sql = "SELECT email FROM apex_usuario WHERE usuario='".toba::usuario()->get_id()."'";
 //ei_arbol($bdtoba->consultar($sql)[0]);
-
 echo '<div class="titulo">';
 $im=toba_recurso::imagen_proyecto('oneloginTop5.png',1750,500);
 echo $im;

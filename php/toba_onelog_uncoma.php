@@ -120,23 +120,6 @@ class toba_onelog_uncoma extends toba_tp_basico
 	function pre_contenido()
 	{
             echo "<link rel=\"stylesheet\" href=\"css/bootstrap.min.css\">";
-            
-		echo "<div class='login-titulo'>";
-                echo '<div class="cabecera" align=\'center\'>';
-                
-                echo '<a href="#" class="enc-usuario" title="Solicitar Usuario" onclick="a_Operacion()">';
-                $usu=toba_recurso::imagen_proyecto('solicitud_usuario.png',60,60);
-                echo $usu;
-                echo '</a>';
-                echo '</div>';
-                
-                echo toba_js::abrir();
-                echo 'function a_Operacion(){';
-
-                echo  'return toba.ir_a_operacion("onelogin", "1002000005", false)';
-    
-                echo '}';    
-                echo toba_js::cerrar();
                 
 		//echo "<div>versi�n ".toba::proyecto()->get_version()."</div>";
 		//echo "</div>";

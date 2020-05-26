@@ -110,6 +110,47 @@ class ci_mostrardatos extends onelogin_ci
 	{
 		$this->dep('datos')->resetear();
 	}
+        
+        
+        //-------------------Formulario de Solicitud-----------------------------------------
+        function conf__form_solicitud(toba_ei_formulario $form)
+        {
+            
+        }
+        
+        function evt__form_solicitud__alta($datos)
+        {
+            $datos_usuario = toba::instancia()->get_info_usuario(toba::usuario()->get_id());
+            $usuario = toba::usuario()->get_id();
+            $perfil_funcional_asociado = consultas_instancia::get_lista_grupos_acceso_usuario_proyecto($usuario,$datos['id_sistema']);
+            $perfil_datos_asociado =  consultas_instancia::get_perfil_datos_asociado($datos['id_sistema'],$usuario);
+            
+            $datos['nombre_usuario'] = $usuario;
+            $i = 0;
+            while($datos['nombre_usuario'][$i] != ' ')
+            {
+                $nombre = $nombre.$datos['nombre_usuario'][$i];
+                $i++;
+            }
+            $i++;
+            print_r(strlen($datos['nombre_usuario']));exit();
+            while($datos['nombre_usuario'][$i] < strlen($datos['nombre_usuario']))
+            {
+                $apellido = $apellido.$datos['nombre_usuario'][$i];
+                $i++;
+            }
+            print_r($datos_usuario['nombre']);                exit();
+            $this->dep('datos2')->tabla('solicitud_usuario')->set($datos);
+            $this->dep('datos2')->tabla('solicitud_usuario')->sincronizar();
+            $this->dep('datos2')->tabla('solicitud_usuario')->resetear();
+            
+            
+//            print_r($datos_usuario);            exit();
+            //Verificar si tienen perfiles asociados en ese sistema
+//            $this->dep('datos2')->tabla('solicitud_usuario')->set($datos);
+//            $this->dep('datos2')->tabla('solicitud_usuario')->sincronizar();
+//            $this->dep('datos2')->tabla('solicitud_usuario')->resetear();
+        }
 
 	//-----------------------------------------------------------------------------------
 	//---- Eventos ----------------------------------------------------------------------

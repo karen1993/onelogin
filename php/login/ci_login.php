@@ -208,8 +208,7 @@ class ci_login extends toba_ci
 			}
 			$form->set_datos($this->s__datos);
 		}
-	}	
-	
+	}
 	
 	//---- open_id -------------------------------------------------------
 	
@@ -317,6 +316,20 @@ class ci_login extends toba_ci
 	}
 
 
+        
+        //----------------Eventos CI-----------------------------------------
+        function evt__registrar()
+        {
+            
+            echo toba_js::abrir();
+            echo 'toba.ir_a_operacion("onelogin", "1002000005", false) ';
+            echo toba_js::cerrar();
+        }
+        
+        function evt__password()
+        {
+            
+        }
 
         //-------------------------------------------------------------------
 	

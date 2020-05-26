@@ -2,8 +2,6 @@
 
 class ci_solicitud_usuarios extends onelogin_ci
 {
-    protected $modificar = false;
-    protected $datos_usuario;
     
     
     function get_lista_perfil_datos($proyecto)
@@ -39,11 +37,6 @@ class ci_solicitud_usuarios extends onelogin_ci
     
     function conf__form_solicitud(toba_ei_formulario $form)
     {
-        if(!$this->modificar)
-        {
-            $form->ef('nombre_usuario')->set_solo_lectura();
-        }
-                
         
     }
     
@@ -56,29 +49,23 @@ class ci_solicitud_usuarios extends onelogin_ci
         $datos['apellido'] = strtolower($datos['apellido']);
         $usuario = $datos['nombre'][0].$datos['apellido'];
         $usuario_existente = consultas_instancia::get_existe_usuario($usuario);
-        if($usuario_existente == 1 && $datos['nombre_usuario'] == null)
+        $num = 01;
+        while($usuario_existente == 1)
         {
-            toba::notificacion()->agregar("Ingrese el nombre de usuario");
-            $this->datos_usuario = $datos;
-            $this->modificar = true;
-            
+            $usuario = $usuario.$num;
+            $usuario_existente = consultas_instancia::get_existe_usuario($usuario);
+            $num++;
         }
         
-        else
-        {
-            $this->modificar = false;
-            if($datos['nombre_usuario'] == null)
-            {
-                $datos['nombre_usuario'] = $usuario;
-            }
+        $datos['nombre_usuario'] = $usuario;
             
-            $this->dep('datos')->tabla('solicitud_usuario')->set($datos);
-            $this->dep('datos')->tabla('solicitud_usuario')->sincronizar();
-            $this->dep('datos')->tabla('solicitud_usuario')->resetear();
+        $this->dep('datos')->tabla('solicitud_usuario')->set($datos);
+        $this->dep('datos')->tabla('solicitud_usuario')->sincronizar();
+        $this->dep('datos')->tabla('solicitud_usuario')->resetear();
+           
+        toba::notificacion()->agregar('La solicitud de usuario se ha realizado correctamente. En breve recibira un mail para la confirmacion de la solicitud', 'info');
             
-            toba::notificacion()->agregar('La solicitud de usuario se ha realizado correctamente', 'info');
-            
-        }
+        
 
     }
     

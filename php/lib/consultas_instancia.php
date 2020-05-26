@@ -112,7 +112,7 @@ class consultas_instancia
 		if (isset($fila['id'])) {
 			return $fila['id'];
 		} else {
-			throw new toba_error("No se encontro la sesión de la solicitud $id_solicitud");
+			throw new toba_error("No se encontro la sesiï¿½n de la solicitud $id_solicitud");
 		}
 	}
 
@@ -506,6 +506,20 @@ class consultas_instancia
 		return $datos;
 	}
 	
+        static function get_perfil_datos_asociado($proyecto,$usuario)
+        {
+            $proyecto = quote($proyecto);
+            $usuario = quote($usuario);
+            
+            $sql = "SELECT 
+                        proyecto,
+                        usuario_perfil_datos,
+                        usuario
+                    FROM apex_usuario_proyecto_perfil_datos
+                    WHERE proyecto = $proyecto AND usuario = $usuario";
+            return toba::db()->consultar($sql);
+        }
+        
 	//---------------------------------------------------------------------
 	//------ Servicios Web ------------------------------------------
 	//---------------------------------------------------------------------		
