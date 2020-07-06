@@ -221,8 +221,8 @@ INSERT INTO apex_objeto_ei_formulario_ef (objeto_ei_formulario_fila, objeto_ei_f
 	'0', --solo_lectura
 	'0', --solo_lectura_modificacion
 	'get_lista_perfil_datos', --carga_metodo
-	NULL, --carga_clase
-	NULL, --carga_include
+	'consultas_instancia', --carga_clase
+	'lib/consultas_instancia.php', --carga_include
 	NULL, --carga_dt
 	NULL, --carga_consulta_php
 	NULL, --carga_sql
@@ -300,15 +300,15 @@ INSERT INTO apex_objeto_ei_formulario_ef (objeto_ei_formulario_fila, objeto_ei_f
 	NULL, --estado_defecto
 	'0', --solo_lectura
 	'0', --solo_lectura_modificacion
-	'get_perfiles_funcionales', --carga_metodo
-	NULL, --carga_clase
-	NULL, --carga_include
+	'get_lista_grupos_acceso_proyecto', --carga_metodo
+	'consultas_instancia', --carga_clase
+	'lib/consultas_instancia.php', --carga_include
 	NULL, --carga_dt
 	NULL, --carga_consulta_php
 	NULL, --carga_sql
 	'onelogin', --carga_fuente
 	NULL, --carga_lista
-	'perfil_funcional', --carga_col_clave
+	'usuario_grupo_acc', --carga_col_clave
 	'nombre', --carga_col_desc
 	'id_sistema', --carga_maestros
 	'0', --carga_cascada_relaj
@@ -393,8 +393,8 @@ INSERT INTO apex_objeto_ei_formulario_ef (objeto_ei_formulario_fila, objeto_ei_f
 	NULL, --carga_maestros
 	'0', --carga_cascada_relaj
 	'0', --cascada_mantiene_estado
-	'0', --carga_permite_no_seteado
-	NULL, --carga_no_seteado
+	'1', --carga_permite_no_seteado
+	'--Seleccione--', --carga_no_seteado
 	'0', --carga_no_seteado_ocultar
 	'15', --edit_tamano
 	'15', --edit_maximo

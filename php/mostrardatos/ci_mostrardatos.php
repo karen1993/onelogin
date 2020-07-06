@@ -1,6 +1,9 @@
 <?php
 class ci_mostrardatos extends onelogin_ci
 {
+    protected $s__where;
+    protected $s__datos_filtro;
+    
 	//---- Cuadro -----------------------------------------------------------------------
             
 	
@@ -113,6 +116,7 @@ class ci_mostrardatos extends onelogin_ci
         
         
         //-------------------Formulario de Solicitud-----------------------------------------
+        //-----------------------------------------------------------------------------------
         function conf__form_solicitud(toba_ei_formulario $form)
         {
             
@@ -147,12 +151,42 @@ class ci_mostrardatos extends onelogin_ci
             
 //            print_r($datos_usuario);            exit();
             //Verificar si tienen perfiles asociados en ese sistema
-//            $this->dep('datos2')->tabla('solicitud_usuario')->set($datos);
-//            $this->dep('datos2')->tabla('solicitud_usuario')->sincronizar();
-//            $this->dep('datos2')->tabla('solicitud_usuario')->resetear();
+        }
+        
+        //-------------------------------------------------------------------------------
+        //-------------------------- FILTRO ---------------------------------------------
+
+        function conf__filtro_solicitud(toba_ei_filtro $filtro) {
+            if (isset($this->s__datos_filtro)) {
+                $filtro->set_datos($this->s__datos_filtro);
+            }
         }
 
-	//-----------------------------------------------------------------------------------
+        function evt__filtro_solicitud__filtrar($datos) {
+            $this->s__datos_filtro = $datos;
+            $this->s__where = $this->dep('filtro_solicitud')->get_sql_where();
+        }
+
+        function evt__filtro_solicitud__cancelar() {
+            unset($this->s__datos_filtro);
+            unset($this->s__where);
+        }
+        
+        //----------------------------------------------------------------------------------
+        //-------------------------Cuadro Solicitudes---------------------------------------
+        
+        function conf__cuadro_solicitud(toba_ei_cuadro $cuadro)
+        {
+            $id_solicitud = $this->dep('datos')->tabla('solicitud_usuario')->get()['id_solicitud'];
+            
+            if (isset($this->s__where)) {
+                $datos = $this->dep('datos')->tabla('solicitud_usuario')->get_solicitudes($id_solicitud, $this->s__where);
+            } 
+
+        $cuadro->set_datos($datos);
+        }
+
+        //-----------------------------------------------------------------------------------
 	//---- Eventos ----------------------------------------------------------------------
 	//-----------------------------------------------------------------------------------
 

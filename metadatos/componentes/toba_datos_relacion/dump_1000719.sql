@@ -50,10 +50,41 @@ INSERT INTO apex_objeto_datos_rel (proyecto, objeto, debug, clave, ap, punto_mon
 	'0', --debug
 	NULL, --clave
 	'2', --ap
-	NULL, --punto_montaje
+	'1000004', --punto_montaje
 	NULL, --ap_clase
 	NULL, --ap_archivo
 	'0', --sinc_susp_constraints
 	'1', --sinc_orden_automatico
 	'1'  --sinc_lock_optimista
 );
+
+------------------------------------------------------------
+-- apex_objeto_dependencias
+------------------------------------------------------------
+
+--- INICIO Grupo de desarrollo 1002
+INSERT INTO apex_objeto_dependencias (proyecto, dep_id, objeto_consumidor, objeto_proveedor, identificador, parametros_a, parametros_b, parametros_c, inicializar, orden) VALUES (
+	'onelogin', --proyecto
+	'1002000072', --dep_id
+	'1000719', --objeto_consumidor
+	'1002000096', --objeto_proveedor
+	'estado', --identificador
+	'1', --parametros_a
+	'1', --parametros_b
+	NULL, --parametros_c
+	NULL, --inicializar
+	NULL  --orden
+);
+INSERT INTO apex_objeto_dependencias (proyecto, dep_id, objeto_consumidor, objeto_proveedor, identificador, parametros_a, parametros_b, parametros_c, inicializar, orden) VALUES (
+	'onelogin', --proyecto
+	'1002000071', --dep_id
+	'1000719', --objeto_consumidor
+	'1002000095', --objeto_proveedor
+	'solicitud_usuario', --identificador
+	'1', --parametros_a
+	'1', --parametros_b
+	NULL, --parametros_c
+	NULL, --inicializar
+	NULL  --orden
+);
+--- FIN Grupo de desarrollo 1002

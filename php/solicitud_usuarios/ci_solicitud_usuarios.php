@@ -44,7 +44,7 @@ class ci_solicitud_usuarios extends onelogin_ci
     {
         $fecha = date('d-m-y');
         $datos['timestamp'] = $fecha;        
-        $datos['id_estado'] = 1;
+        $datos['id_estado'] = 'PEND';
         $datos['nombre'] = strtolower($datos['nombre']);
         $datos['apellido'] = strtolower($datos['apellido']);
         $usuario = $datos['nombre'][0].$datos['apellido'];

@@ -22,6 +22,18 @@ class dt_solicitud_usuario extends onelogin_datos_tabla
          */
         return toba::db('onelogin_solicitud')->consultar($sql);
     }
+    
+    function get_solicitudes($where) 
+    {
+        print_r($where);        exit();
+        $sql = "SELECT  s.nombre_usuario, s.sistema, est.estado 
+                FROM solicitud_usuario as s INNER JOIN estado as est ON (s.id_estado = est.id_estado)
+                WHERE s.id_solicitud = $solicitud";
+        if (!is_null($where)) {
+            $sql .= "AND $where ";
+        }
+        return toba::db('onelogin_solicitud')->consultar($sql);
+    }
 }
 
 
