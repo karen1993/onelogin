@@ -180,8 +180,11 @@ class ci_mostrardatos extends onelogin_ci
             $id_solicitud = $this->dep('datos')->tabla('solicitud_usuario')->get()['id_solicitud'];
             
             if (isset($this->s__where)) {
-                $datos = $this->dep('datos')->tabla('solicitud_usuario')->get_solicitudes($id_solicitud, $this->s__where);
-            } 
+                $datos = $this->dep('datos')->tabla('solicitud_usuario')->get_solicitudes($this->s__where);
+            }
+            else {
+                $datos = $this->dep('datos')->tabla('solicitud_usuario')->get_solicitudes();
+            }
 
         $cuadro->set_datos($datos);
         }

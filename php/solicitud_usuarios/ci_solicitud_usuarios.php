@@ -42,18 +42,21 @@ class ci_solicitud_usuarios extends onelogin_ci
     
     function evt__form_solicitud__alta($datos)
     {
+        
         $fecha = date('d-m-y');
         $datos['timestamp'] = $fecha;        
         $datos['id_estado'] = 'PEND';
         $datos['nombre'] = strtolower($datos['nombre']);
         $datos['apellido'] = strtolower($datos['apellido']);
         $usuario = $datos['nombre'][0].$datos['apellido'];
+        $usuario_en_solicitud = consultas_instancia::existe_usuario_solicitud($usuario);
         $usuario_existente = consultas_instancia::get_existe_usuario($usuario);
         $num = 01;
-        while($usuario_existente == 1)
+        while($usuario_existente == 1 || $usuario_en_solicitud == 1)
         {
             $usuario = $usuario.$num;
             $usuario_existente = consultas_instancia::get_existe_usuario($usuario);
+            $usuario_en_solicitud = consultas_instancia::existe_usuario_solicitud($usuario);
             $num++;
         }
         

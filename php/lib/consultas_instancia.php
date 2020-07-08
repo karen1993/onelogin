@@ -538,5 +538,28 @@ class consultas_instancia
 		}
 		return toba::db()->consultar($sql);		
 	}
+        
+        //---------------------------------------------------------------------
+        //------------Solicitudes de usuario----------------------------------
+        //---------------------------------------------------------------------
+        static function existe_usuario_solicitud($usuario)
+        {
+            $existe = 0;
+            $sql = "SELECT 
+                    s.id_solicitud,
+                    s.nombre_usuario,
+                    e.id_estado,
+                    s.id_sistema
+                    
+                FROM solicitud_usuario  as s INNER JOIN estado as e ON (s.id_estado = e.id_estado) ";
+        
+            $solicitudes = toba::db('onelogin_solicitud')->consultar($sql);
+            foreach ($solicitudes as $solicitud) {
+                if($solicitud['nombre_usuario'] == $usuario) {
+                    $existe = 1;
+                }
+            }
+            return $existe;
+        }
 }
 ?>
