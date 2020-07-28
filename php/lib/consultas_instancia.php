@@ -435,6 +435,20 @@ class consultas_instancia
 		return toba::db()->consultar($sql);
 	}
 	
+        
+        static function get_grupo_acceso($proyecto, $perfil)
+	{
+		$proyecto = quote($proyecto);
+		$perfil = quote($perfil);
+		$sql = "SELECT 	nombre 
+                                 
+				FROM 	apex_usuario_grupo_acc
+				WHERE 	proyecto = $proyecto
+				AND 	usuario_grupo_acc = $perfil";
+                $perfil_funcional = toba::db()->consultar($sql);
+		return $perfil_funcional[0]['nombre'];
+	}
+        
 	static function get_descripcion_perfil_datos($proyecto, $perfil)
 	{
 		$proyecto = quote($proyecto);
@@ -445,6 +459,18 @@ class consultas_instancia
 				WHERE 	proyecto = $proyecto
 				AND 	usuario_perfil_datos = $perfil";
 		return toba::db()->consultar($sql);
+	}
+        
+        static function get_perfil_datos($proyecto, $perfil)
+	{
+		$proyecto = quote($proyecto);
+		$perfil = quote($perfil);
+		$sql = "SELECT 	nombre 
+				FROM 	apex_usuario_perfil_datos
+				WHERE 	proyecto = $proyecto
+				AND 	usuario_perfil_datos = $perfil";
+                $perfil_datos = toba::db()->consultar($sql);
+		return $perfil_datos[0]['nombre'];
 	}
 
 	//---------------------------------------------------------------------

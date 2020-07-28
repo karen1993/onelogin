@@ -1,4 +1,5 @@
 <?php
+require_once('lib/consultas_instancia.php');
 
 class ci_solicitud_usuarios extends onelogin_ci
 {
@@ -71,6 +72,18 @@ class ci_solicitud_usuarios extends onelogin_ci
         
 
     }
+    
+    
+//    //-------------------------------------------------------------
+//    //-----------------------Cuadro--------------------------------
+//    //-------------------------------------------------------------
+//    
+//    function conf__cuadro_usuario(toba_ei_cuadro $cuadro)
+//        {            
+//            $datos = $this->dep('datos')->tabla('solicitud_usuario')->get_listado();
+//            
+//            $cuadro->set_datos($datos);
+//        }
     
     
     //-------------------Eventos CI----------------------------

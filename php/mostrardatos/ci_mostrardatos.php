@@ -1,10 +1,16 @@
 <?php
+require_once('lib/consultas_instancia.php');
+
 class ci_mostrardatos extends onelogin_ci
 {
+    
     protected $s__where;
     protected $s__datos_filtro;
-    
-	//---- Cuadro -----------------------------------------------------------------------
+    protected $mostrar_solicitud = 0;
+    protected $verificar = false;
+
+
+    //---- Cuadro -----------------------------------------------------------------------
             
 	
 
@@ -124,33 +130,27 @@ class ci_mostrardatos extends onelogin_ci
         
         function evt__form_solicitud__alta($datos)
         {
-            $datos_usuario = toba::instancia()->get_info_usuario(toba::usuario()->get_id());
             $usuario = toba::usuario()->get_id();
             $perfil_funcional_asociado = consultas_instancia::get_lista_grupos_acceso_usuario_proyecto($usuario,$datos['id_sistema']);
-            $perfil_datos_asociado =  consultas_instancia::get_perfil_datos_asociado($datos['id_sistema'],$usuario);
-            
-            $datos['nombre_usuario'] = $usuario;
-            $i = 0;
-            while($datos['nombre_usuario'][$i] != ' ')
-            {
-                $nombre = $nombre.$datos['nombre_usuario'][$i];
-                $i++;
+            if($perfil_funcional_asociado != null) {
+                toba::notificacion()->agregar(utf8_decode('El usuario ya tiene asignado un perfil funcional dentro del sistema.'), 'info');
             }
-            $i++;
-            print_r(strlen($datos['nombre_usuario']));exit();
-            while($datos['nombre_usuario'][$i] < strlen($datos['nombre_usuario']))
-            {
-                $apellido = $apellido.$datos['nombre_usuario'][$i];
-                $i++;
+            else {
+                $datos['nombre_usuario'] = $usuario;          
+            
+                $this->dep('datos')->tabla('solicitud_usuario')->set($datos);
+                $this->dep('datos')->tabla('solicitud_usuario')->sincronizar();
+                $this->dep('datos')->tabla('solicitud_usuario')->resetear();
+                
+                toba::notificacion()->agregar(utf8_decode('La solicitud se ha realizado correctamente.'), 'info');
+                
             }
-            print_r($datos_usuario['nombre']);                exit();
-            $this->dep('datos2')->tabla('solicitud_usuario')->set($datos);
-            $this->dep('datos2')->tabla('solicitud_usuario')->sincronizar();
-            $this->dep('datos2')->tabla('solicitud_usuario')->resetear();
             
+        }
+        
+        //-------------------------------------------------
+        function conf__pant_solicitudes(toba_ei_pantalla $pantalla) {
             
-//            print_r($datos_usuario);            exit();
-            //Verificar si tienen perfiles asociados en ese sistema
         }
         
         //-------------------------------------------------------------------------------
@@ -173,12 +173,10 @@ class ci_mostrardatos extends onelogin_ci
         }
         
         //----------------------------------------------------------------------------------
-        //-------------------------Cuadro Solicitudes---------------------------------------
+        //-------------------------Cuadro Solicitudes-Central---------------------------------------
         
         function conf__cuadro_solicitud(toba_ei_cuadro $cuadro)
-        {
-            $id_solicitud = $this->dep('datos')->tabla('solicitud_usuario')->get()['id_solicitud'];
-            
+        {            
             if (isset($this->s__where)) {
                 $datos = $this->dep('datos')->tabla('solicitud_usuario')->get_solicitudes($this->s__where);
             }
@@ -186,7 +184,93 @@ class ci_mostrardatos extends onelogin_ci
                 $datos = $this->dep('datos')->tabla('solicitud_usuario')->get_solicitudes();
             }
 
-        $cuadro->set_datos($datos);
+            $cuadro->set_datos($datos);
+        }
+        
+        function evt__cuadro_solicitud__seleccion($datos)
+        {
+            $this->mostrar_solicitud = 1;
+            $solicitud = $this->dep('datos')->tabla('solicitud_usuario')->get_listado($datos['id_solicitud']);
+            $this->set_pantalla('pant_solicitudes');
+            $this->dep('datos')->tabla('solicitud_usuario')->cargar($solicitud[0]);
+            
+        }
+        
+        //----------------------------------------------------------------------------------
+        //---------------------------Formulario Central-------------------------------------
+        //----------------------------------------------------------------------------------
+        
+        function conf__formulario_central(toba_ei_formulario $form) {
+            if($this->mostrar_solicitud == 1) {
+                $this->dep('formulario_central')->descolapsar();
+            } else {
+                $this->dep('formulario_central')->colapsar();
+            }
+            
+            if(!$this->verificar)
+            {
+                $this->dep('formulario_central')->evento('modificacion')->ocultar();
+                $form->ef('id_estado')->set_solo_lectura();
+            }
+            
+            if ($this->dep('datos')->tabla('solicitud_usuario')->esta_cargada()) {
+                $datos = $this->dep('datos')->tabla('solicitud_usuario')->get();
+                $datos2 = $datos;
+                $datos2['perfil_datos'] = consultas_instancia::get_perfil_datos($datos['id_sistema'],$datos['id_perfil_datos']);
+                $datos2['perfil_funcional'] = consultas_instancia::get_grupo_acceso($datos['id_sistema'],$datos['id_perfil_funcional']);
+               
+                $form->set_datos($datos2);
+            }
+        }
+        
+        function evt__formulario_central__verificar($datos)
+        {
+            //*** Sólo se puede tener un perfil funcionl dentro de los sistemas?? O en algunos se puede tener más de 1??
+            $perfil_funcional_asoc = consultas_instancia::get_lista_grupos_acceso_usuario_proyecto($datos['nombre_usuario'],$datos['id_sistema']);
+            if($perfil_funcional_asoc == null)
+            {
+                $this->dep('formulario_central')->evento('modificacion')->mostrar();
+                toba::notificacion()->agregar(utf8_decode('El usuario es apto para el sistema, no tiene asignado un perfil funcional dentro del mismo.'), 'info');
+            }
+            else {
+                toba::notificacion()->agregar(utf8_decode('El usuario ya tiene asignado un perfil funcional dentro del sistema.'), 'info');
+                
+            }
+            
+            $solicitud = $this->dep('datos')->tabla('solicitud_usuario')->get();
+            $datos2['nombre'] = $datos['nombre'];
+            $datos2['apellido'] = $datos['apellido'];
+            $datos2['nombre_usuario'] = $datos['nombre_usuario'];
+            $datos2['id_sistema'] = $datos['id_sistema'];
+            $datos2['id_estado'] = $datos['id_estado'];
+            $datos2['id_perfil_datos'] = $solicitud['id_perfil_datos'];
+            $datos2['id_perfil_funcional'] = $solicitud['id_perfil_funcional'];
+            
+            $this->set_pantalla('pant_solicitudes');
+            $this->dep('datos')->tabla('solicitud_usuario')->cargar($datos2);
+            
+            $this->mostrar_solicitud = 1;
+            $this->verificar = true;
+        }
+        
+        function evt__formulario_central__modificacion($datos)
+        {
+            $solicitud = $this->dep('datos')->tabla('solicitud_usuario')->get();
+            $datos['id_perfil_datos'] = $solicitud['id_perfil_datos'];
+            $datos['id_perfil_funcional'] = $solicitud['id_perfil_funcional'];
+            $this->dep('datos')->tabla('solicitud_usuario')->set($datos);
+            $this->dep('datos')->tabla('solicitud_usuario')->sincronizar();
+            
+            $this->mostrar_solicitud = 1;
+            $this->verificar = true;
+        }
+        
+        function evt__formulario_central__cancelar()
+        {
+            $this->dep('datos')->tabla('solicitud_usuario')->resetear();
+            $this->set_pantalla('pant_solicitudes');
+            $this->mostrar_solicitud = 0;
+            $this->verificar = false;
         }
 
         //-----------------------------------------------------------------------------------
