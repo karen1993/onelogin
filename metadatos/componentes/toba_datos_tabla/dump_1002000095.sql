@@ -116,12 +116,12 @@ INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, colum
 	'1002000095', --objeto
 	'1002000360', --col_id
 	'id_sistema', --columna
-	'E', --tipo
+	'C', --tipo
 	'0', --pk
-	'solicitud_usuario_id_sistema_seq', --secuencia
-	NULL, --largo
+	NULL, --secuencia
+	'15', --largo
 	NULL, --no_nulo
-	'1', --no_nulo_db
+	'0', --no_nulo_db
 	'0', --externa
 	'solicitud_usuario'  --tabla
 );
@@ -130,12 +130,12 @@ INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, colum
 	'1002000095', --objeto
 	'1002000361', --col_id
 	'id_perfil_datos', --columna
-	'E', --tipo
+	'C', --tipo
 	'0', --pk
-	'solicitud_usuario_id_perfil_datos_seq', --secuencia
-	NULL, --largo
+	NULL, --secuencia
+	'30', --largo
 	NULL, --no_nulo
-	'1', --no_nulo_db
+	'0', --no_nulo_db
 	'0', --externa
 	'solicitud_usuario'  --tabla
 );
@@ -146,10 +146,10 @@ INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, colum
 	'id_perfil_funcional', --columna
 	'E', --tipo
 	'0', --pk
-	'solicitud_usuario_id_perfil_funcional_seq', --secuencia
+	NULL, --secuencia
 	NULL, --largo
 	NULL, --no_nulo
-	'1', --no_nulo_db
+	'0', --no_nulo_db
 	'0', --externa
 	'solicitud_usuario'  --tabla
 );
@@ -186,6 +186,20 @@ INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, colum
 	'1002000095', --objeto
 	'1002000365', --col_id
 	'apellido', --columna
+	'C', --tipo
+	'0', --pk
+	'', --secuencia
+	NULL, --largo
+	NULL, --no_nulo
+	'0', --no_nulo_db
+	'0', --externa
+	'solicitud_usuario'  --tabla
+);
+INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, columna, tipo, pk, secuencia, largo, no_nulo, no_nulo_db, externa, tabla) VALUES (
+	'onelogin', --objeto_proyecto
+	'1002000095', --objeto
+	'1002000368', --col_id
+	'clave', --columna
 	'C', --tipo
 	'0', --pk
 	'', --secuencia

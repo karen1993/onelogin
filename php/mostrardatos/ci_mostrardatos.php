@@ -131,13 +131,37 @@ class ci_mostrardatos extends onelogin_ci
         function evt__form_solicitud__alta($datos)
         {
             $usuario = toba::usuario()->get_id();
+                
             $perfil_funcional_asociado = consultas_instancia::get_lista_grupos_acceso_usuario_proyecto($usuario,$datos['id_sistema']);
             if($perfil_funcional_asociado != null) {
                 toba::notificacion()->agregar(utf8_decode('El usuario ya tiene asignado un perfil funcional dentro del sistema.'), 'info');
             }
             else {
+                
+//                $nombre_usuario = toba::usuario()->get_nombre();
+//                
+//                $cadena = array(strlen($nombre_usuario));
+//                $cadena = $nombre_usuario;
+//                
+//                $i = 0;
+//                $nombre = '';
+//                $apellido = '';
+//                while($i < strlen($cadena) && $cadena[$i] != ' ') {
+//                    
+//                        $nombre = $nombre.$cadena[$i];
+//                        $i++;
+//                }
+//                $i++;
+//                while($i < strlen($cadena)) {
+//                    
+//                        $apellido = $apellido.$cadena[$i];
+//                        $i++;
+//                }
+                
                 $datos['nombre_usuario'] = $usuario;          
-            
+//                $datos['nombre'] = strtolower($nombre);
+//                $datos['apellido'] = strtolower($apellido);
+
                 $this->dep('datos')->tabla('solicitud_usuario')->set($datos);
                 $this->dep('datos')->tabla('solicitud_usuario')->sincronizar();
                 $this->dep('datos')->tabla('solicitud_usuario')->resetear();
@@ -151,6 +175,27 @@ class ci_mostrardatos extends onelogin_ci
         //-------------------------------------------------
         function conf__pant_solicitudes(toba_ei_pantalla $pantalla) {
             
+        }
+        
+        function conf__pant_edicion(toba_ei_pantalla $pantalla) {
+            $perfil = toba::manejador_sesiones()->get_perfiles_funcionales()[0];
+            if($perfil != 'sec_ext_central') {
+                $this->pantalla()->tab("pant_solicitudes")->ocultar();
+            }
+        }
+        
+        function conf__pant_clave(toba_ei_pantalla $pantalla) {
+            $perfil = toba::manejador_sesiones()->get_perfiles_funcionales()[0];
+            if($perfil != 'sec_ext_central') {
+                $this->pantalla()->tab("pant_solicitudes")->ocultar();
+            }
+        }
+        
+        function conf__pant_formulario(toba_ei_pantalla $pantalla) {
+            $perfil = toba::manejador_sesiones()->get_perfiles_funcionales()[0];
+            if($perfil != 'sec_ext_central') {
+                $this->pantalla()->tab("pant_solicitudes")->ocultar();
+            }
         }
         
         //-------------------------------------------------------------------------------
@@ -255,9 +300,33 @@ class ci_mostrardatos extends onelogin_ci
         
         function evt__formulario_central__modificacion($datos)
         {
+            $usuarios_existentes = consultas_instancia::get_lista_usuarios();
             $solicitud = $this->dep('datos')->tabla('solicitud_usuario')->get();
             $datos['id_perfil_datos'] = $solicitud['id_perfil_datos'];
             $datos['id_perfil_funcional'] = $solicitud['id_perfil_funcional'];
+            $es_usuario = false;
+            
+            foreach ($usuarios_existentes as $usuario) {
+                if($usuario['usuario'] == $datos['nombre_usuario']) {
+                    $es_usuario = true;
+                }
+            }
+            
+            if(!$es_usuario && $datos['id_estado'] == 'APRB') {
+                $nom_usuario = $datos[nombre_usuario];
+                $clave = md5($datos[clave]);
+                $sql = "INSERT INTO desarrollo.apex_usuario(
+                            usuario, clave, nombre, email, autentificacion, bloqueado, parametro_a,
+                            parametro_b, parametro_c, solicitud_registrar, solicitud_obs_tipo_proyecto,
+                            solicitud_obs_tipo, solicitud_observacion, usuario_tipodoc, pre,
+                            ciu, suf, telefono, vencimiento, dias, hora_entrada, hora_salida,
+                            ip_permitida, forzar_cambio_pwd)
+                VALUES ('$nom_usuario','$clave', '$nom_usuario', null, 'md5',0, null,null, null, null, null,null, null, null, null,null, null, null, null, null, null, null,null, 0)";
+            
+                toba::db()->consultar($sql);
+                toba::notificacion()->agregar(utf8_decode('El usuario se creó correctamente.'), 'info');
+            }
+            
             $this->dep('datos')->tabla('solicitud_usuario')->set($datos);
             $this->dep('datos')->tabla('solicitud_usuario')->sincronizar();
             

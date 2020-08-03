@@ -62,6 +62,7 @@ class ci_solicitud_usuarios extends onelogin_ci
         }
         
         $datos['nombre_usuario'] = $usuario;
+        $datos['clave'] = $datos['nombre'].'.'.date('Y');
             
         $this->dep('datos')->tabla('solicitud_usuario')->set($datos);
         $this->dep('datos')->tabla('solicitud_usuario')->sincronizar();

@@ -143,18 +143,18 @@ INSERT INTO apex_objeto_ei_filtro_col (objeto_ei_filtro_col, objeto_ei_filtro, o
 	NULL, --estado_defecto
 	'0', --opciones_es_multiple
 	'ef_combo', --opciones_ef
-	NULL, --carga_metodo
+	'get_estado', --carga_metodo
 	NULL, --carga_clase
 	NULL, --carga_include
-	NULL, --carga_dt
+	'1002000096', --carga_dt
 	NULL, --carga_consulta_php
 	NULL, --carga_sql
 	'onelogin', --carga_fuente
-	'Aprobado,Rechazado,Pendiente', --carga_lista
-	NULL, --carga_col_clave
-	NULL, --carga_col_desc
-	'0', --carga_permite_no_seteado
-	NULL, --carga_no_seteado
+	NULL, --carga_lista
+	'id_estado', --carga_col_clave
+	'estado', --carga_col_desc
+	'1', --carga_permite_no_seteado
+	'--Seleccione--', --carga_no_seteado
 	'0', --carga_no_seteado_ocultar
 	NULL, --carga_maestros
 	NULL, --edit_tamano
