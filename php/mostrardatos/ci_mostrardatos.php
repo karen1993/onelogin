@@ -137,31 +137,33 @@ class ci_mostrardatos extends onelogin_ci
                 toba::notificacion()->agregar(utf8_decode('El usuario ya tiene asignado un perfil funcional dentro del sistema.'), 'info');
             }
             else {
+                $nombre_usuario = toba::usuario()->get_nombre();
                 
-//                $nombre_usuario = toba::usuario()->get_nombre();
-//                
-//                $cadena = array(strlen($nombre_usuario));
-//                $cadena = $nombre_usuario;
-//                
-//                $i = 0;
-//                $nombre = '';
-//                $apellido = '';
-//                while($i < strlen($cadena) && $cadena[$i] != ' ') {
-//                    
-//                        $nombre = $nombre.$cadena[$i];
-//                        $i++;
-//                }
-//                $i++;
-//                while($i < strlen($cadena)) {
-//                    
-//                        $apellido = $apellido.$cadena[$i];
-//                        $i++;
-//                }
+                $cadena = array(strlen($nombre_usuario));
+                $cadena = $nombre_usuario;
+                
+                $i = 0;
+                $nombre = '';
+                $apellido = '';
+                while($i < strlen($cadena) && $cadena[$i] != ' ') {
+                    
+                        $nombre = $nombre.$cadena[$i];
+                        $i++;
+                }
+                $i++;
+                while($i < strlen($cadena)) {
+                    
+                        $apellido = $apellido.$cadena[$i];
+                        $i++;
+                }
                 
                 $datos['nombre_usuario'] = $usuario;          
-//                $datos['nombre'] = strtolower($nombre);
-//                $datos['apellido'] = strtolower($apellido);
-
+                $datos['nombre'] = strtolower($nombre);
+                $datos['apellido'] = strtolower($apellido);
+                $datos['id_estado'] = 'PEND';
+                $fecha = date('d-m-y');
+                $datos['timestamp'] = $fecha;
+        
                 $this->dep('datos')->tabla('solicitud_usuario')->set($datos);
                 $this->dep('datos')->tabla('solicitud_usuario')->sincronizar();
                 $this->dep('datos')->tabla('solicitud_usuario')->resetear();
@@ -180,21 +182,21 @@ class ci_mostrardatos extends onelogin_ci
         function conf__pant_edicion(toba_ei_pantalla $pantalla) {
             $perfil = toba::manejador_sesiones()->get_perfiles_funcionales()[0];
 //            print_r(toba::manejador_sesiones()->get_perfiles_funcionales());            exit();
-            if($perfil != 'sec_ext_central' && $perfil != 'admin') {
+            if($perfil != 'admin') {
                 $this->pantalla()->tab("pant_solicitudes")->ocultar();
             }
         }
         
         function conf__pant_clave(toba_ei_pantalla $pantalla) {
             $perfil = toba::manejador_sesiones()->get_perfiles_funcionales()[0];
-            if($perfil != 'sec_ext_central' && $perfil != 'admin') {
+            if($perfil != 'admin') {
                 $this->pantalla()->tab("pant_solicitudes")->ocultar();
             }
         }
         
         function conf__pant_formulario(toba_ei_pantalla $pantalla) {
             $perfil = toba::manejador_sesiones()->get_perfiles_funcionales()[0];
-            if($perfil != 'sec_ext_central' && $perfil != 'admin') {
+            if($perfil != 'admin') {
                 $this->pantalla()->tab("pant_solicitudes")->ocultar();
             }
         }
@@ -291,7 +293,7 @@ class ci_mostrardatos extends onelogin_ci
             $datos2['id_estado'] = $datos['id_estado'];
             $datos2['id_perfil_datos'] = $solicitud['id_perfil_datos'];
             $datos2['id_perfil_funcional'] = $solicitud['id_perfil_funcional'];
-            
+
             $this->set_pantalla('pant_solicitudes');
             $this->dep('datos')->tabla('solicitud_usuario')->cargar($datos2);
             
@@ -305,8 +307,10 @@ class ci_mostrardatos extends onelogin_ci
             $solicitud = $this->dep('datos')->tabla('solicitud_usuario')->get();
             $datos['id_perfil_datos'] = $solicitud['id_perfil_datos'];
             $datos['id_perfil_funcional'] = $solicitud['id_perfil_funcional'];
+            $datos['clave'] = $solicitud['clave'];
             $es_usuario = false;
-            
+            $nom_usuario = $datos[nombre_usuario];
+            $clave = md5($datos[clave]);
             foreach ($usuarios_existentes as $usuario) {
                 if($usuario['usuario'] == $datos['nombre_usuario']) {
                     $es_usuario = true;
@@ -314,8 +318,7 @@ class ci_mostrardatos extends onelogin_ci
             }
             
             if(!$es_usuario && $datos['id_estado'] == 'APRB') {
-                $nom_usuario = $datos[nombre_usuario];
-                $clave = md5($datos[clave]);
+                
                 $sql = "INSERT INTO desarrollo.apex_usuario(
                             usuario, clave, nombre, email, autentificacion, bloqueado, parametro_a,
                             parametro_b, parametro_c, solicitud_registrar, solicitud_obs_tipo_proyecto,
@@ -328,7 +331,22 @@ class ci_mostrardatos extends onelogin_ci
                 
                 $sql2 = "INSERT INTO desarrollo.apex_usuario_proyecto(
                             proyecto, usuario_grupo_acc, usuario, usuario_perfil_datos)
-                VALUES ('$datos[id_sistema]','$datos[id_perfil_funcional]', '$nom_usuario', 'null')";
+                VALUES ('$datos[id_sistema]','$datos[id_perfil_funcional]', '$nom_usuario', null)";
+            
+                toba::db()->consultar($sql2);
+                
+                $sql3 = "INSERT INTO desarrollo.apex_usuario_proyecto_perfil_datos(
+                            proyecto, usuario_perfil_datos, usuario)
+                VALUES ('$datos[id_sistema]','$datos[id_perfil_datos]', '$nom_usuario')";
+            
+                toba::db()->consultar($sql3);
+                
+                toba::notificacion()->agregar(utf8_decode('El usuario se creó correctamente.'), 'info');
+            }
+            else {
+                $sql2 = "INSERT INTO desarrollo.apex_usuario_proyecto(
+                            proyecto, usuario_grupo_acc, usuario, usuario_perfil_datos)
+                VALUES ('$datos[id_sistema]','$datos[id_perfil_funcional]', '$nom_usuario', null)";
             
                 toba::db()->consultar($sql2);
                 

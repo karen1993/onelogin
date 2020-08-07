@@ -16,8 +16,8 @@ INSERT INTO apex_objeto (proyecto, objeto, anterior, identificador, reflexivo, c
 	'toba', --clase_proyecto
 	'toba_ei_formulario', --clase
 	'1000004', --punto_montaje
-	NULL, --subclase
-	NULL, --subclase_archivo
+	'formulario_ocultar_mostrar', --subclase
+	'lib/formulario_ocultar_mostrar.php', --subclase_archivo
 	NULL, --objeto_categoria_proyecto
 	NULL, --objeto_categoria
 	'MostrarDatos - CI - form_solicitud', --nombre
@@ -204,10 +204,10 @@ INSERT INTO apex_objeto_ei_formulario_ef (objeto_ei_formulario_fila, objeto_ei_f
 	'id_perfil_datos', --identificador
 	'ef_combo', --elemento_formulario
 	'id_perfil_datos', --columnas
-	'1', --obligatorio
+	'0', --obligatorio
 	'0', --oculto_relaja_obligatorio
-	'2', --orden
-	'Id perfil datos', --etiqueta
+	'3', --orden
+	'Perfil de Datos', --etiqueta
 	NULL, --etiqueta_estilo
 	NULL, --descripcion
 	'0', --colapsado
@@ -286,8 +286,8 @@ INSERT INTO apex_objeto_ei_formulario_ef (objeto_ei_formulario_fila, objeto_ei_f
 	'id_perfil_funcional', --columnas
 	'1', --obligatorio
 	'0', --oculto_relaja_obligatorio
-	'3', --orden
-	'Id perfil funcional', --etiqueta
+	'2', --orden
+	'Perfil Funcional', --etiqueta
 	NULL, --etiqueta_estilo
 	NULL, --descripcion
 	'0', --colapsado
@@ -367,7 +367,7 @@ INSERT INTO apex_objeto_ei_formulario_ef (objeto_ei_formulario_fila, objeto_ei_f
 	'1', --obligatorio
 	'0', --oculto_relaja_obligatorio
 	'1', --orden
-	'Id sistema', --etiqueta
+	'Sistema', --etiqueta
 	NULL, --etiqueta_estilo
 	NULL, --descripcion
 	'0', --colapsado

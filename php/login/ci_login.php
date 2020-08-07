@@ -320,14 +320,14 @@ class ci_login extends toba_ci
         //----------------Eventos CI-----------------------------------------
         function evt__registrar()
         {
-            
+              echo toba_js::abrir();
+                
+                echo 'toba.ir_a_operacion("onelogin", "2", false)';
+                
+              echo toba_js::cerrar();
+              
         }
         
-        function evt__password()
-        {
-            
-        }
-
         //-------------------------------------------------------------------
 	
 	function extender_objeto_js()

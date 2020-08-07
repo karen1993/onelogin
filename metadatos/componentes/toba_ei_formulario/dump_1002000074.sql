@@ -16,8 +16,8 @@ INSERT INTO apex_objeto (proyecto, objeto, anterior, identificador, reflexivo, c
 	'toba', --clase_proyecto
 	'toba_ei_formulario', --clase
 	'1000004', --punto_montaje
-	NULL, --subclase
-	NULL, --subclase_archivo
+	'formulario_ocultar_mostrar', --subclase
+	'lib/formulario_ocultar_mostrar.php', --subclase_archivo
 	NULL, --objeto_categoria_proyecto
 	NULL, --objeto_categoria
 	'SolicitudUsuarios - form_solicitud', --nombre
@@ -378,7 +378,7 @@ INSERT INTO apex_objeto_ei_formulario_ef (objeto_ei_formulario_fila, objeto_ei_f
 	'id_perfil_datos', --identificador
 	'ef_combo', --elemento_formulario
 	'id_perfil_datos', --columnas
-	'1', --obligatorio
+	'0', --obligatorio
 	'0', --oculto_relaja_obligatorio
 	'6', --orden
 	'Perfil de Datos', --etiqueta
