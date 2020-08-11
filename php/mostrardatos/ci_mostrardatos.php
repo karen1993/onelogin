@@ -8,6 +8,8 @@ class ci_mostrardatos extends onelogin_ci
     protected $s__datos_filtro;
     protected $mostrar_solicitud = 0;
     protected $verificar = false;
+    protected $crear_usuario = false;
+    protected $evento_crear = false;
 
 
     //---- Cuadro -----------------------------------------------------------------------
@@ -244,6 +246,39 @@ class ci_mostrardatos extends onelogin_ci
             
         }
         
+        //--------------------------------------------------------------------------------------------
+        //----------------------Métodos Extra----------------------------------------------------------
+        
+        function get_lista_perfil_datos($proyecto)
+        {
+                $proyecto = quote($proyecto);
+		$sql = "SELECT 	proyecto,
+						usuario_perfil_datos,
+						nombre,
+						descripcion						
+				FROM 	apex_usuario_perfil_datos 
+				WHERE	proyecto = $proyecto";
+		return toba::db()->consultar($sql);
+
+        
+        }
+    
+        function get_perfiles_funcionales($proyecto)
+        {
+            $perfiles_funcionales = consultas_instancia::get_lista_grupos_acceso_proyecto($proyecto);
+            $datos = array();
+            $a = 0;
+            foreach($perfiles_funcionales as $perfil)
+            {
+                if($perfil['usuario_grupo_acc'] != 'admin') {
+                    $datos[$a]['perfil_funcional'] = $perfil['usuario_grupo_acc'];
+                    $datos[$a]['nombre'] = $perfil['nombre'];
+                    $a++;
+                }
+            }
+        return $datos;
+        }
+        
         //----------------------------------------------------------------------------------
         //---------------------------Formulario Central-------------------------------------
         //----------------------------------------------------------------------------------
@@ -260,109 +295,130 @@ class ci_mostrardatos extends onelogin_ci
                 $this->dep('formulario_central')->evento('modificacion')->ocultar();
                 $form->ef('id_estado')->set_solo_lectura();
             }
+            else
+            {
+                $this->dep('formulario_central')->evento('verificar')->ocultar();
+            }
+            
+            if(!$this->crear_usuario) 
+            {
+                    $this->dep('formulario_central')->evento('crear')->ocultar();
+            }
+            else {
+                $this->dep('formulario_central')->evento('modificacion')->ocultar();
+                $form->ef('id_estado')->set_solo_lectura();
+            }
+                
             
             if ($this->dep('datos')->tabla('solicitud_usuario')->esta_cargada()) {
                 $datos = $this->dep('datos')->tabla('solicitud_usuario')->get();
-                $datos2 = $datos;
-                $datos2['perfil_datos'] = consultas_instancia::get_perfil_datos($datos['id_sistema'],$datos['id_perfil_datos']);
-                $datos2['perfil_funcional'] = consultas_instancia::get_grupo_acceso($datos['id_sistema'],$datos['id_perfil_funcional']);
-               
-                $form->set_datos($datos2);
+                
+                $form->set_datos($datos);
             }
         }
         
         function evt__formulario_central__verificar($datos)
         {
-            //*** Sólo se puede tener un perfil funcionl dentro de los sistemas?? O en algunos se puede tener más de 1??
             $perfil_funcional_asoc = consultas_instancia::get_lista_grupos_acceso_usuario_proyecto($datos['nombre_usuario'],$datos['id_sistema']);
             if($perfil_funcional_asoc == null)
             {
                 $this->dep('formulario_central')->evento('modificacion')->mostrar();
                 toba::notificacion()->agregar(utf8_decode('El usuario es apto para el sistema, no tiene asignado un perfil funcional dentro del mismo.'), 'info');
+//                $this->crear_usuario = true;
             }
             else {
                 toba::notificacion()->agregar(utf8_decode('El usuario ya tiene asignado un perfil funcional dentro del sistema.'), 'info');
-                
+//                $this->crear_usuario = false;
             }
-            
-            $solicitud = $this->dep('datos')->tabla('solicitud_usuario')->get();
-            $datos2['nombre'] = $datos['nombre'];
-            $datos2['apellido'] = $datos['apellido'];
-            $datos2['nombre_usuario'] = $datos['nombre_usuario'];
-            $datos2['id_sistema'] = $datos['id_sistema'];
-            $datos2['id_estado'] = $datos['id_estado'];
-            $datos2['id_perfil_datos'] = $solicitud['id_perfil_datos'];
-            $datos2['id_perfil_funcional'] = $solicitud['id_perfil_funcional'];
 
             $this->set_pantalla('pant_solicitudes');
-            $this->dep('datos')->tabla('solicitud_usuario')->cargar($datos2);
+            $this->dep('datos')->tabla('solicitud_usuario')->cargar($datos);
             
             $this->mostrar_solicitud = 1;
             $this->verificar = true;
         }
         
-        function evt__formulario_central__modificacion($datos)
+        function evt__formulario_central__crear($datos) 
         {
+            $perfil_funcional_asoc = consultas_instancia::get_lista_grupos_acceso_usuario_proyecto($datos['nombre_usuario'],$datos['id_sistema']);
             $usuarios_existentes = consultas_instancia::get_lista_usuarios();
             $solicitud = $this->dep('datos')->tabla('solicitud_usuario')->get();
-            $datos['id_perfil_datos'] = $solicitud['id_perfil_datos'];
-            $datos['id_perfil_funcional'] = $solicitud['id_perfil_funcional'];
-            $datos['clave'] = $solicitud['clave'];
             $es_usuario = false;
             $nom_usuario = $datos[nombre_usuario];
-            $clave = md5($datos[clave]);
+            
+            if($solicitud['clave'] != null) {
+                $datos['clave'] = $solicitud['clave'];
+                $clave = md5($datos[clave]);
+            }
+            
             foreach ($usuarios_existentes as $usuario) {
                 if($usuario['usuario'] == $datos['nombre_usuario']) {
                     $es_usuario = true;
                 }
             }
             
-            if(!$es_usuario && $datos['id_estado'] == 'APRB') {
+            if($datos['id_estado'] == 'APRB' && $perfil_funcional_asoc == null) {
                 
-                $sql = "INSERT INTO desarrollo.apex_usuario(
+                if(!$es_usuario) {
+                
+                    $sql = "INSERT INTO desarrollo.apex_usuario(
                             usuario, clave, nombre, email, autentificacion, bloqueado, parametro_a,
                             parametro_b, parametro_c, solicitud_registrar, solicitud_obs_tipo_proyecto,
                             solicitud_obs_tipo, solicitud_observacion, usuario_tipodoc, pre,
                             ciu, suf, telefono, vencimiento, dias, hora_entrada, hora_salida,
                             ip_permitida, forzar_cambio_pwd)
-                VALUES ('$nom_usuario','$clave', '$nom_usuario', null, 'md5',0, null,null, null, null, null,null, null, null, null,null, null, null, null, null, null, null,null, 0)";
+                    VALUES ('$nom_usuario','$clave', '$nom_usuario', null, 'md5',0, null,null, null, null, null,null, null, null, null,null, null, null, null, null, null, null,null, 0)";
             
-                toba::db()->consultar($sql);
+                    toba::db()->consultar($sql);
                 
-                $sql2 = "INSERT INTO desarrollo.apex_usuario_proyecto(
-                            proyecto, usuario_grupo_acc, usuario, usuario_perfil_datos)
-                VALUES ('$datos[id_sistema]','$datos[id_perfil_funcional]', '$nom_usuario', null)";
+                    $sql2 = "INSERT INTO desarrollo.apex_usuario_proyecto(
+                                proyecto, usuario_grupo_acc, usuario, usuario_perfil_datos)
+                            VALUES ('$datos[id_sistema]','$datos[id_perfil_funcional]', '$nom_usuario', null)";
             
-                toba::db()->consultar($sql2);
+                    toba::db()->consultar($sql2);
                 
-                $sql3 = "INSERT INTO desarrollo.apex_usuario_proyecto_perfil_datos(
-                            proyecto, usuario_perfil_datos, usuario)
-                VALUES ('$datos[id_sistema]','$datos[id_perfil_datos]', '$nom_usuario')";
+                    $sql3 = "INSERT INTO desarrollo.apex_usuario_proyecto_perfil_datos(
+                                proyecto, usuario_perfil_datos, usuario)
+                            VALUES ('$datos[id_sistema]','$datos[id_perfil_datos]', '$nom_usuario')";
             
-                toba::db()->consultar($sql3);
+                    toba::db()->consultar($sql3);
                 
-                toba::notificacion()->agregar(utf8_decode('El usuario se creó correctamente.'), 'info');
+                    toba::notificacion()->agregar(utf8_decode('El usuario se creó correctamente.'), 'info');
+                }
+                else {
+                    $sql2 = "INSERT INTO desarrollo.apex_usuario_proyecto(
+                                proyecto, usuario_grupo_acc, usuario, usuario_perfil_datos)
+                            VALUES ('$datos[id_sistema]','$datos[id_perfil_funcional]', '$nom_usuario', null)";
+            
+                    toba::db()->consultar($sql2);
+                
+                    $sql3 = "INSERT INTO desarrollo.apex_usuario_proyecto_perfil_datos(
+                                proyecto, usuario_perfil_datos, usuario)
+                            VALUES ('$datos[id_sistema]','$datos[id_perfil_datos]', '$nom_usuario')";
+            
+                    toba::db()->consultar($sql3);
+                
+                    toba::notificacion()->agregar(utf8_decode('El usuario se creó correctamente.'), 'info');
+                }
             }
-            else {
-                $sql2 = "INSERT INTO desarrollo.apex_usuario_proyecto(
-                            proyecto, usuario_grupo_acc, usuario, usuario_perfil_datos)
-                VALUES ('$datos[id_sistema]','$datos[id_perfil_funcional]', '$nom_usuario', null)";
             
-                toba::db()->consultar($sql2);
-                
-                $sql3 = "INSERT INTO desarrollo.apex_usuario_proyecto_perfil_datos(
-                            proyecto, usuario_perfil_datos, usuario)
-                VALUES ('$datos[id_sistema]','$datos[id_perfil_datos]', '$nom_usuario')";
-            
-                toba::db()->consultar($sql3);
-                
-                toba::notificacion()->agregar(utf8_decode('El usuario se creó correctamente.'), 'info');
-            }
             
             $this->dep('datos')->tabla('solicitud_usuario')->set($datos);
             $this->dep('datos')->tabla('solicitud_usuario')->sincronizar();
-            
+            $this->dep('datos')->tabla('solicitud_usuario')->cargar($datos);
+        }
+        
+        function evt__formulario_central__modificacion($datos)
+        {
+            $perfil_funcional_asoc = consultas_instancia::get_lista_grupos_acceso_usuario_proyecto($datos['nombre_usuario'],$datos['id_sistema']);
+            if($datos['id_estado'] == 'APRB' && $perfil_funcional_asoc == null) {
+                $this->crear_usuario = true;
+            }
+            $this->dep('datos')->tabla('solicitud_usuario')->set($datos);
+            $this->dep('datos')->tabla('solicitud_usuario')->sincronizar();
+            $this->mostrar_solicitud = 1;
             $this->verificar = true;
+
         }
         
         function evt__formulario_central__cancelar()

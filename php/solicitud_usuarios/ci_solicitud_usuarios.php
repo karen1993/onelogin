@@ -22,15 +22,15 @@ class ci_solicitud_usuarios extends onelogin_ci
     function get_perfiles_funcionales($proyecto)
     {
         $perfiles_funcionales = consultas_instancia::get_lista_grupos_acceso_proyecto($proyecto);
-        
         $datos = array();
         $a = 0;
         foreach($perfiles_funcionales as $perfil)
         {
-            
-            $datos[$a]['perfil_funcional'] = $perfil['usuario_grupo_acc'];
-            $datos[$a]['nombre'] = $perfil['nombre'];
-            $a++;
+            if($perfil['usuario_grupo_acc'] != 'admin') {
+                $datos[$a]['perfil_funcional'] = $perfil['usuario_grupo_acc'];
+                $datos[$a]['nombre'] = $perfil['nombre'];
+                $a++;
+            }
         }
         return $datos;
     }

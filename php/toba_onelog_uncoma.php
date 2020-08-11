@@ -128,7 +128,7 @@ class toba_onelog_uncoma extends toba_tp_basico
 
 	function post_contenido()
 	{
-                echo "<a href='?ai=onelogin||1002000005&tcm=previsualizacion&tm=1' type='button' class='btn btn-link'> Solicite su usuario AQUI </a>";
+                echo "<a href='?ai=onelogin||1002000005&tcm=previsualizacion&tm=1' type='button' class='btn btn-primary'> Solicite su usuario AQUI </a>";
 		echo "</div>";		
 		echo "<div class='login-pie'>";
 		echo "<div>Desarrollado por <strong><a href='http://euclides.uncoma.edu.ar/' style='text-decoration: none' target='_blank'>EUCLIDES</a></strong></div>
