@@ -209,4 +209,18 @@ INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, colum
 	'0', --externa
 	'solicitud_usuario'  --tabla
 );
+INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, columna, tipo, pk, secuencia, largo, no_nulo, no_nulo_db, externa, tabla) VALUES (
+	'onelogin', --objeto_proyecto
+	'1002000095', --objeto
+	'1002000369', --col_id
+	'correo', --columna
+	'C', --tipo
+	'0', --pk
+	'', --secuencia
+	NULL, --largo
+	NULL, --no_nulo
+	'0', --no_nulo_db
+	'0', --externa
+	'solicitud_usuario'  --tabla
+);
 --- FIN Grupo de desarrollo 1002

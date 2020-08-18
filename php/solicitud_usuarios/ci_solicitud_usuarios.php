@@ -38,7 +38,6 @@ class ci_solicitud_usuarios extends onelogin_ci
     
     function conf__form_solicitud(toba_ei_formulario $form)
     {
-        
     }
     
     function evt__form_solicitud__alta($datos)

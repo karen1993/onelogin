@@ -14,7 +14,8 @@ class dt_solicitud_usuario extends onelogin_datos_tabla
                     s.id_estado,
                     s.id_perfil_datos,
                     s.id_perfil_funcional,
-                    s.id_sistema
+                    s.id_sistema,
+                    s.correo
                     
                 FROM solicitud_usuario  as s INNER JOIN estado as e ON (s.id_estado = e.id_estado)
                 WHERE s.id_solicitud = $solicitud ";

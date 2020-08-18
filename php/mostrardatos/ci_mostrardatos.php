@@ -178,27 +178,35 @@ class ci_mostrardatos extends onelogin_ci
         
         //-------------------------------------------------
         function conf__pant_solicitudes(toba_ei_pantalla $pantalla) {
-            
+//            $perfil = toba::manejador_sesiones()->get_perfiles_funcionales()[0];
+//            if($perfil == 'gestor') {
+//                $this->pantalla()->tab("pant_formulario")->ocultar();
+//            }
         }
         
         function conf__pant_edicion(toba_ei_pantalla $pantalla) {
             $perfil = toba::manejador_sesiones()->get_perfiles_funcionales()[0];
-//            print_r(toba::manejador_sesiones()->get_perfiles_funcionales());            exit();
-            if($perfil != 'admin') {
+            if($perfil != 'gestor' && $perfil != 'admin') {
                 $this->pantalla()->tab("pant_solicitudes")->ocultar();
             }
+//            else {
+//                $this->pantalla()->tab("pant_formulario")->ocultar();
+//            }
         }
         
         function conf__pant_clave(toba_ei_pantalla $pantalla) {
             $perfil = toba::manejador_sesiones()->get_perfiles_funcionales()[0];
-            if($perfil != 'admin') {
+            if($perfil != 'gestor' && $perfil != 'admin') {
                 $this->pantalla()->tab("pant_solicitudes")->ocultar();
             }
+//            else {
+//                $this->pantalla()->tab("pant_formulario")->ocultar();
+//            }
         }
         
         function conf__pant_formulario(toba_ei_pantalla $pantalla) {
             $perfil = toba::manejador_sesiones()->get_perfiles_funcionales()[0];
-            if($perfil != 'admin') {
+            if($perfil != 'gestor' && $perfil != 'admin') {
                 $this->pantalla()->tab("pant_solicitudes")->ocultar();
             }
         }
@@ -307,9 +315,11 @@ class ci_mostrardatos extends onelogin_ci
             else {
                 $this->dep('formulario_central')->evento('modificacion')->ocultar();
                 $form->ef('id_estado')->set_solo_lectura();
+                $form->ef('id_sistema')->set_solo_lectura();
+                $form->ef('id_perfil_funcional')->set_solo_lectura();
+                $form->ef('id_perfil_datos')->set_solo_lectura();
             }
                 
-            
             if ($this->dep('datos')->tabla('solicitud_usuario')->esta_cargada()) {
                 $datos = $this->dep('datos')->tabla('solicitud_usuario')->get();
                 
@@ -360,14 +370,14 @@ class ci_mostrardatos extends onelogin_ci
             if($datos['id_estado'] == 'APRB' && $perfil_funcional_asoc == null) {
                 
                 if(!$es_usuario) {
-                
+                    
                     $sql = "INSERT INTO desarrollo.apex_usuario(
                             usuario, clave, nombre, email, autentificacion, bloqueado, parametro_a,
                             parametro_b, parametro_c, solicitud_registrar, solicitud_obs_tipo_proyecto,
                             solicitud_obs_tipo, solicitud_observacion, usuario_tipodoc, pre,
                             ciu, suf, telefono, vencimiento, dias, hora_entrada, hora_salida,
                             ip_permitida, forzar_cambio_pwd)
-                    VALUES ('$nom_usuario','$clave', '$nom_usuario', null, 'md5',0, null,null, null, null, null,null, null, null, null,null, null, null, null, null, null, null,null, 0)";
+                    VALUES ('$nom_usuario','$clave', '$nom_usuario', '$solicitud[correo]', 'md5',0, null,null, null, null, null,null, null, null, null,null, null, null, null, null, null, null,null, 0)";
             
                     toba::db()->consultar($sql);
                 
@@ -384,21 +394,32 @@ class ci_mostrardatos extends onelogin_ci
                     toba::db()->consultar($sql3);
                 
                     toba::notificacion()->agregar(utf8_decode('El usuario se creó correctamente.'), 'info');
+                    $link = '<a href= http://mocovi.uncoma.edu.ar/>MOCOVI</a>';
+                    $cuerpo_mail = '<p>Se ha generado el usuario solicitado con los siguientes datos <strong>Usuario: '.
+                            $nom_usuario.' Contrasenia: '.$datos['clave'].'</strong>.'
+                            . '<div> Puede ingresar accediendo al siguiente link: '.$link.'</br></br></div>'
+                            . ' <div><br><br>Saludos cordiales.</div></p>';
+        
                 }
                 else {
-                    $sql2 = "INSERT INTO desarrollo.apex_usuario_proyecto(
+                    
+                    $sql = "INSERT INTO desarrollo.apex_usuario_proyecto(
                                 proyecto, usuario_grupo_acc, usuario, usuario_perfil_datos)
                             VALUES ('$datos[id_sistema]','$datos[id_perfil_funcional]', '$nom_usuario', null)";
             
-                    toba::db()->consultar($sql2);
+                    toba::db()->consultar($sql);
                 
-                    $sql3 = "INSERT INTO desarrollo.apex_usuario_proyecto_perfil_datos(
+                    $sql2 = "INSERT INTO desarrollo.apex_usuario_proyecto_perfil_datos(
                                 proyecto, usuario_perfil_datos, usuario)
                             VALUES ('$datos[id_sistema]','$datos[id_perfil_datos]', '$nom_usuario')";
             
-                    toba::db()->consultar($sql3);
+                    toba::db()->consultar($sql2);
                 
                     toba::notificacion()->agregar(utf8_decode('El usuario se creó correctamente.'), 'info');
+                    
+                    $cuerpo_mail = '<p>La solicitud de usuario ya ha sido atendida, puede ingresar al modulo correspondiente '
+                            . 'con el usuario y contrasenia de Mocovi.'
+                            . '<br><br>Saludos cordiales. </p>';
                 }
             }
             
@@ -406,6 +427,27 @@ class ci_mostrardatos extends onelogin_ci
             $this->dep('datos')->tabla('solicitud_usuario')->set($datos);
             $this->dep('datos')->tabla('solicitud_usuario')->sincronizar();
             $this->dep('datos')->tabla('solicitud_usuario')->cargar($datos);
+            
+           
+            $info_usuario = toba::instancia()->get_info_usuario($nom_usuario); 
+            $mail_usuario = $info_usuario['email'];
+            
+            $asunto = 'Solicitud de usuario';
+            
+            toba::instancia()->get_db()->abrir_transaccion();
+                
+            try {
+                    $mail = new toba_mail($mail_usuario, $asunto, $cuerpo_mail);
+                    $mail->set_html(true);
+                    $mail->enviar();
+                    toba::notificacion()->agregar(utf8_decode('Se ha enviado un mail al usuario.'), 'info');
+                    toba::instancia()->get_db()->cerrar_transaccion();
+		} catch (toba_error $e) {
+			toba::instancia()->get_db()->abortar_transaccion();
+			
+			throw new toba_error('Se produjo un error en el proceso de respuesta a la solicitud, por favor contactese con un administrador del sistema.');
+		}
+            
         }
         
         function evt__formulario_central__modificacion($datos)
@@ -413,10 +455,14 @@ class ci_mostrardatos extends onelogin_ci
             $perfil_funcional_asoc = consultas_instancia::get_lista_grupos_acceso_usuario_proyecto($datos['nombre_usuario'],$datos['id_sistema']);
             if($datos['id_estado'] == 'APRB' && $perfil_funcional_asoc == null) {
                 $this->crear_usuario = true;
+                $this->mostrar_solicitud = 1;
+            }
+            else {
+                $this->mostrar_solicitud = 0;
+                $this->crear_usuario = false;
             }
             $this->dep('datos')->tabla('solicitud_usuario')->set($datos);
             $this->dep('datos')->tabla('solicitud_usuario')->sincronizar();
-            $this->mostrar_solicitud = 1;
             $this->verificar = true;
 
         }
