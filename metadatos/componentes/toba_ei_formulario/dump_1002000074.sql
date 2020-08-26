@@ -295,9 +295,9 @@ INSERT INTO apex_objeto_ei_formulario_ef (objeto_ei_formulario_fila, objeto_ei_f
 	'1002000133', --objeto_ei_formulario_fila
 	'1002000074', --objeto_ei_formulario
 	'onelogin', --objeto_ei_formulario_proyecto
-	'email', --identificador
+	'correo', --identificador
 	'ef_editable', --elemento_formulario
-	'email', --columnas
+	'correo', --columnas
 	'1', --obligatorio
 	'0', --oculto_relaja_obligatorio
 	'3', --orden

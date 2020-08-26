@@ -62,7 +62,6 @@ class ci_solicitud_usuarios extends onelogin_ci
         
         $datos['nombre_usuario'] = $usuario;
         $datos['clave'] = $datos['nombre'].'.'.date('Y');
-            
         $this->dep('datos')->tabla('solicitud_usuario')->set($datos);
         $this->dep('datos')->tabla('solicitud_usuario')->sincronizar();
         $this->dep('datos')->tabla('solicitud_usuario')->resetear();
@@ -72,18 +71,6 @@ class ci_solicitud_usuarios extends onelogin_ci
         
 
     }
-    
-    
-//    //-------------------------------------------------------------
-//    //-----------------------Cuadro--------------------------------
-//    //-------------------------------------------------------------
-//    
-//    function conf__cuadro_usuario(toba_ei_cuadro $cuadro)
-//        {            
-//            $datos = $this->dep('datos')->tabla('solicitud_usuario')->get_listado();
-//            
-//            $cuadro->set_datos($datos);
-//        }
     
     
     //-------------------Eventos CI----------------------------

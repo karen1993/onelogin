@@ -6,6 +6,7 @@ class ci_recuperar_contrasenia extends toba_ci
 	protected $randr;
 	protected $s__email;
 	private $pregunta;
+        private $contador;
 	
 	function ini()
 	{
@@ -15,12 +16,13 @@ class ci_recuperar_contrasenia extends toba_ci
 			$this->randr = toba::memoria()->get_parametro('randr');        //Esto hara las veces de unique para la renovacion
 		}
 
-		//Esto es por si el chango trata de entrar al item directamente
+		//Esto es por si se trata de entrar al item directamente
 		$item = toba::memoria()->get_item_solicitado();
 		$tms = toba_manejador_sesiones::instancia();
 		if ($item[0] == 'toba_editor' && !$tms->existe_usuario_activo()) {
 			throw new toba_error_ini_sesion('No se puede correr este item fuera del editor');
 		}
+                
 	}
 
 	//-----------------------------------------------------------------------------------
@@ -39,19 +41,53 @@ class ci_recuperar_contrasenia extends toba_ci
 	function evt__form_usuario__enviar($datos)
 	{
 		//Miro que vengan los datos que necesito
-		if (! isset($datos['usuario'])) {
-			throw new toba_error_autenticacion('No se suministro un usuario v�lido');
+		if (! isset($datos['email'])) {
+			throw new toba_error_autenticacion(utf8_decode('No se suministro un mail válido'));
 		}
-
+                $this->s__usuario = $this->recuperar_usuario_con_email($datos['email']);
 		//Si el usuario existe, entonces disparo el envio de mail 
-		if (! $this->verificar_usuario_activo($datos['usuario'])) {
-			throw new toba_error_autenticacion('No se suministro un usuario v�lido');
+		if (! $this->verificar_usuario_activo($this->s__usuario)) {
+			throw new toba_error_autenticacion(utf8_decode('No se suministro un usuario válido'));
 		} 
+                
 		$this->set_pantalla('pant_pregunta');
-		$this->s__usuario = $datos['usuario'];
-		$this->s__email = $this->recuperar_direccion_mail_usuario($this->s__usuario);
+		$this->s__email = $datos['email'];
 	}
 
+        //-----------------------------------------------------------------------------------
+	//---- form_token ----------------------------------------------------------------
+	//-----------------------------------------------------------------------------------
+
+	function conf__form_token(toba_ei_formulario $form)
+	{
+		if($this->contador != 0) {
+                    $form->ef('token')->set_estado('');
+                }
+	}
+
+	function evt__form_token__confirmar($datos)
+	{
+            $datos_usu = $this->recuperar_datos_solicitud($this->s__usuario);
+		if($datos_usu[0]['random'] == $datos['token']) {
+                    $this->contador = 0;
+                    $this->randr = $datos_usu[0]['random'];
+                    $this->set_pantalla('pant_inicial');
+                }
+                else {
+                    $this->contador++;
+                    print_r($this->contador);
+                    
+                    if($this->contador == 3){
+                        $this->set_pantalla('pant_inicial');
+                    }
+                    else {
+                        $this->set_pantalla('pant_token');
+                        throw new toba_error_autenticacion(utf8_decode('No se suministro un token válido, vuelva a ingresar'));
+                    }
+                    
+                 }
+	}
+        
 	//-----------------------------------------------------------------------------------
 	//---- form_pregunta ----------------------------------------------------------------
 	//-----------------------------------------------------------------------------------
@@ -69,27 +105,95 @@ class ci_recuperar_contrasenia extends toba_ci
 	{
 		$this->verificar_desafio_secreto($datos);    
 	}
-	
+        
+        //-----------------------------------------------------------------------------------
+	//---- form_cambio_clave ----------------------------------------------------------------
+	//-----------------------------------------------------------------------------------
+	function evt__form_cambio_clave__aceptar($datos)
+        {
+            ini_set('error_reporting', E_ALL);      //Esto para que en el Server, como esta en produccion, largue errores que esten pasando..
+            
+            if($datos['clave_nueva']==$datos['repite_clave'])
+            {
+                $datos_rs = $this->recuperar_datos_solicitud_usuario($this->s__usuario);
+		if (empty($datos_rs)) {
+			toba::logger()->debug(utf8_decode('Proceso de cambio de contraseña en base: El usuario o el token no coinciden' ));
+			toba::logger()->var_dump(array('rnd' => $this->randr));
+			throw new toba_error('Se produjo un error en el proceso de cambio, contactese con un administrador del sistema.');            
+		} else {
+                        if(count($datos_rs) == 1) {
+                            $datos_orig = current($datos_rs);
+                        }
+                        else {
+                            $datos_orig = end( $datos_rs );
+                        }
+			
+		}
+                $proyecto = toba::proyecto()->get_id();
+              //Verifico que no intenta volver a cambiarla antes del periodo permitido
+                $dias_minimos = toba_parametros::get_clave_validez_minima($proyecto);
+			
+                if (! is_null($dias_minimos)) {
+                    if (! toba_usuario::verificar_periodo_minimo_cambio($usuario, $dias_minimos)) {
+                         toba::notificacion()->agregar();
+                        return;
+                    }
+                }        
+              //Obtengo el largo minimo de la clave            
+              $largo_clave = toba_parametros::get_largo_pwd($proyecto);
+              
+              try {
+                  toba_usuario::verificar_composicion_clave($datos['clave_nueva'], $largo_clave);
+              
+                  //Obtengo los dias de validez de la nueva clave
+                  $dias = toba_parametros::get_clave_validez_maxima($proyecto);
+                  $ultimas_claves = toba_parametros::get_nro_claves_no_repetidas($proyecto);
+                  toba_usuario::verificar_clave_no_utilizada($datos['clave_nueva'], $datos_orig['usuario'], $ultimas_claves);
+                  toba_usuario::reemplazar_clave_vencida($datos['clave_nueva'], $datos_orig['usuario'], $dias);
+                  $this->es_cambio_contrasenia = true;                //Bandera para el post_eventos
+                  toba::notificacion()->agregar('Modificacion realizada con Exito!', 'info');
+                  echo toba_js::abrir();
+                  echo 'toba.ir_a_operacion("onelogin", "1000292", false) ';
+                  echo toba_js::cerrar();
+              } catch(toba_error_pwd_conformacion_invalida $e) {
+                  toba::logger()->info($e->getMessage());
+                  toba::notificacion()->agregar($e->getMessage(), 'error');
+                  return;
+                  
+              }
+
+            }
+            else
+            {
+		$this->resetear();
+                toba::notificacion()->agregar('Las claves nuevas no Coinciden', 'error');
+            }
+        }
 	//-----------------------------------------------------------------------------------
 	//---- Eventos ----------------------------------------------------------------------
 	//-----------------------------------------------------------------------------------
 
 	function evt__recordame()
 	{
-		//Primero verifico que se haya cumplimentado con el periodo minimo de vida de la contrase�a
+		//Primero verifico que se haya cumplido con el periodo minimo de vida de la contraseña
 		$dias = toba_parametros::get_clave_validez_minima(toba::proyecto()->get_id());
 		if (! is_null($dias)) {
 			if (! toba_usuario::verificar_periodo_minimo_cambio($this->s__usuario, $dias)) {
-				toba::notificacion()->agregar('No transcurrio el per�odo minimo para poder volver a cambiar su contrase�a. Intentelo en otra ocasi�n');
+				toba::notificacion()->agregar(utf8_decode('No transcurrio el período minimo para poder volver a cambiar su contraseña. Intentelo en otra ocasión'));
 				return;
 			}
 		}
 		
-		//Si llego hasta aca es porque la respuesta funco, sino explota en la modificacion del form        
+		//Si llego hasta aca es porque la respuesta es correcta, sino explota en la modificacion del form        
 		$this->enviar_mail_aviso_cambio();
 		toba::notificacion()->agregar('Se ha enviado un mail a la cuenta especificada, por favor verifiquela', 'info');
-		$this->set_pantalla('pant_inicial');
+		$this->set_pantalla('pant_token');
 	}
+        
+        function evt__nueva_clave()
+        {
+            $this->set_pantalla('cambio_clave');
+        }
 	
 	//-----------------------------------------------------------------------------------
 	//---- Configuraciones --------------------------------------------------------------
@@ -97,23 +201,34 @@ class ci_recuperar_contrasenia extends toba_ci
 
 	function conf__pant_inicial(toba_ei_pantalla $pantalla)
 	{
-		//Si viene con el random seteado es que esta confirmando el cambio de contrase�a
+		//Si viene con el random seteado es que esta confirmando el cambio de contraseña
 		if (isset($this->randr) && ! is_null($this->randr)) {
 			$pantalla->eliminar_dep('form_usuario');
 			$this->disparar_confirmacion_cambio();
-			toba::notificacion()->agregar('La nueva contrase�a fue enviada a su cuenta de mail.', 'info');
+                        $this->evento('nueva_clave')->mostrar();
+                        $pantalla->set_descripcion(utf8_decode('Presione el botón para ingresar la nueva contraseña'));
 		}
+                else {
+                    $this->evento('nueva_clave')->ocultar();
+                }
 	}
 	
 	function conf__pant_pregunta(toba_ei_pantalla $pantalla)
 	{
-		$this->pregunta = $this->recuperar_pregunta_secreta($this->s__usuario);
-		if (is_null($this->pregunta)) {
-			$pantalla->eliminar_dep('form_pregunta');
-			$pantalla->set_descripcion('Presione el bot�n para continuar con el proceso');
-		} else {
-			$pantalla->set_descripcion('Responda la pregunta y presione el bot�n para continuar con el proceso');
-		}
+
+            $pantalla->eliminar_dep('form_pregunta');
+            $pantalla->set_descripcion(utf8_decode('Presione el botón para continuar con el proceso'));
+
+	}
+        
+        function conf__pant_token(toba_ei_pantalla $pantalla)
+	{
+            $pantalla->set_descripcion(utf8_decode('Ingrese el token enviado a su correo electrónico'));
+	}
+        
+        function conf__cambio_clave(toba_ei_pantalla $pantalla)
+	{
+            $pantalla->set_descripcion(utf8_decode('Cambio de contraseña'));
 	}
 	
 	//----------------------------------------------------------------------------------------
@@ -127,78 +242,45 @@ class ci_recuperar_contrasenia extends toba_ci
 		try {
 			toba::instancia()->get_info_usuario($usuario);        //Tengo que verificar que el negro existe
 		} catch (toba_error_db $e) {                        //Ni true ni false... revienta... el mono no existe
-			toba::logger()->error('Se intento modificar la clave del usuario:' . $usuario);
+			toba::logger()->error(utf8_decode('Se intento modificar la clave del usuario:' . $usuario));
 			return false;
 		}
 		return true;
 	}
 
-	function verificar_desafio_secreto($datos_usuario)
-	{
-		$datos = $this->recuperar_pregunta_secreta($this->s__usuario);
-		if (! is_null($datos)) {
-			$salt = get_salt();
-			$clave1 = encriptar_con_sal(trim($datos['respuesta']), 'SHA256', $salt);
-			$clave2 = encriptar_con_sal(trim($datos_usuario['respuesta']), 'SHA256', $salt);
-			if ($clave1 !== $clave2) {
-				toba::logger()->error("Se intento cambiar la clave al usuario: {$this->s__usuario} pero fall� la respuesta al desaf�o");
-				throw new toba_error('Respuesta no V�lida');
-			}
-		}
-	}
-	
-	/**
-		* Recupera la direccion de mail de usuario
-		* @param string $usuario
+        /**
+		* Recupera el usuario a partir el email
+		* @param string $email
 		* @return string 
 		*/
-	function recuperar_direccion_mail_usuario($usuario)
+        function recuperar_usuario_con_email($email)
 	{
 		try {
-			$datos = toba::instancia()->get_info_usuario($usuario);        //Tengo que verificar que el usuario existe
-			return $datos['email'];
+                        $email = quote($email);
+                        $sql = "SELECT usuario, email
+                                FROM apex_usuario
+                                WHERE email = $email ";
+                        $datos = toba::db()->consultar($sql);
+			return $datos[0]['usuario'];
 		} catch (toba_error $e) {                        
 			toba::logger()->error('Se intento modificar la clave del usuario:' . $usuario);
 			return null;
 		}
 	}
 	
-	/**
-		* Recupera pregunta/respuesta para el desafio
-		* @param string $usuario
-		* @return array 
-		*/
-	function recuperar_pregunta_secreta($usuario)
-	{
-		try {
-			$aux = null;
-			$datos = toba::instancia()->get_pregunta_secreta($usuario);
-			if (! is_null($datos)) {
-				$clave = toba::instalacion()->get_claves_encriptacion();        
-				$aux['pregunta'] = mcrypt_decrypt(MCRYPT_BLOWFISH, $clave['get'], base64_decode($datos['pregunta']), MCRYPT_MODE_CBC, substr($clave['db'], 0, 8));
-				$aux['respuesta'] = mcrypt_decrypt(MCRYPT_BLOWFISH, $clave['get'], base64_decode($datos['respuesta']), MCRYPT_MODE_CBC, substr($clave['db'], 0, 8));
-			}
-			return $aux;
-		} catch (toba_error $e) {
-			toba::logger()->error('Se intento modificar la clave del usuario:' . $usuario);
-			return array();
-		}        
-	}
-		
+
 	/*
-		* Aca envio un primer mail con un link para confirmar el cambio, si no lo usa... fue
+		* Aca envio un primer mail con un link para confirmar el cambio
 		*/
 	function enviar_mail_aviso_cambio()
 	{
 		//Genero un pseudorandom unico... 
 		$tmp_rand = $this->get_random_temporal();
-		$link = $this->generar_link_confirmacion($this->s__usuario, $tmp_rand);    //Genero el link para el mail
-		 
+                
 		//Se envia el mail a la direccion especificada por el usuario.
-		$asunto = 'Solicitud de cambio de contrase�a';
-		$cuerpo_mail = '<p>Este mail fue enviado a esta cuenta porque se <strong>solicito un cambio de contrase�a</strong>.'
-		. 'Si usted solicito dicho cambio haga click en el siguiente link: </br></br>'
-		. $link. '</br> El mismo ser� v�lido unicamente por 24hs.</p>';
+		$asunto =utf8_decode('Solicitud de cambio de contraseña');
+		$cuerpo_mail = utf8_decode('<p>Este mail fue enviado a esta cuenta porque se <strong>solicitó un cambio de contraseña</strong> para el usuario: <strong>'.$this->s__usuario. ' </strong>'
+                        . ' Si usted solicitó dicho cambio copie el siguiente token: <br><br>'.$tmp_rand.' <br><br>en el campo actual.</p>');
 
 		//Guardo el random asociado al usuario y envio el mail
 		toba::instancia()->get_db()->abrir_transaccion();
@@ -207,8 +289,6 @@ class ci_recuperar_contrasenia extends toba_ci
 			$this->guardar_datos_solicitud_cambio($tmp_rand, $this->s__email);
 			$mail = new toba_mail($this->s__email, $asunto, $cuerpo_mail);
 			$mail->set_html(true);
-//                        $mail->set_configuracion_smtp('smtp_gmail');
-//                        ini_set('display_errors', 1); ini_set('display_startup_errors', 1); error_reporting(E_ALL);
 			$mail->enviar();
 			toba::instancia()->get_db()->cerrar_transaccion();
 		} catch (toba_error $e) {
@@ -218,9 +298,7 @@ class ci_recuperar_contrasenia extends toba_ci
 		}
 	}
 
-	/*
-		* Deberia generar un random.. quien sabe que tan bueno o malo sea
-		*/
+	
 	function get_random_temporal()
 	{
 		$uuid = uniqid(rand(), true);
@@ -228,18 +306,6 @@ class ci_recuperar_contrasenia extends toba_ci
 		return $rnd;
 	}
 
-	/*
-		* Obtiene una url con los parametros necesarios para que se haga la confirmacion
-		*/
-	function generar_link_confirmacion($usuario, $random)
-	{
-		$proto = toba_http::get_protocolo();
-		$servidor = toba_http::get_nombre_servidor();
-		$path = toba::proyecto()->get_www();
-		$opciones = array('param_html' => array('tipo' => 'normal' , 'texto' => 'Click Aqui'), 'prefijo' => $proto. $servidor. $path['url']);
-		$parametros = array('usuario' => $usuario, 'randr' => $random);
-		return toba::vinculador()->get_url(null, null, $parametros, $opciones);
-	}
 	
 	/*
 	* Impacta en la base para cambiar la contrase�a del usuario
@@ -247,52 +313,20 @@ class ci_recuperar_contrasenia extends toba_ci
 	function disparar_confirmacion_cambio()
 	{
 		//Recupero mail del usuario junto con el hash de confirmacion
-		$datos_rs = $this->recuperar_datos_solicitud_cambio($this->s__usuario, $this->randr);
-		if (empty($datos_rs)) {
-			toba::logger()->debug('Proceso de cambio de contrase�a en base: El usuario o el random no coinciden' );
-			toba::logger()->var_dump(array('rnd' => $this->randr));
-			throw new toba_error('Se produjo un error en el proceso de cambio, contactese con un administrador del sistema.');            
-		} else {
-			$datos_orig = current($datos_rs);
-		}
+//		$datos_rs = $this->recuperar_datos_solicitud_cambio($this->s__usuario, $this->randr);
+//		if (empty($datos_rs)) {
+//			toba::logger()->debug(utf8_decode('Proceso de cambio de contraseña en base: El usuario o el token no coinciden' ));
+//			toba::logger()->var_dump(array('rnd' => $this->randr));
+//			throw new toba_error('Se produjo un error en el proceso de cambio, contactese con un administrador del sistema.');            
+//		} else {
+//			$datos_orig = current($datos_rs);
+//		}
 				
-		//Aca tengo que generar una clave temporal y enviarsela para que confirme el cambio e ingrese con ella.
-		do {			
-			try {
-				$claveok = true;
-				$clave_tmp = toba_usuario::generar_clave_aleatoria('10');
-				toba_usuario::verificar_composicion_clave($clave_tmp, 10);
-				toba_usuario::verificar_clave_no_utilizada($clave_tmp, $datos_orig['id_usuario']);	
-			} catch(toba_error_pwd_conformacion_invalida $e) {
-				$claveok = false;
-			} catch(toba_error_usuario $e) {
-				toba::logger()->error('Se estan generando claves aleatorias repetidas!! '. $clave_tmp);				//Debe aparecer en el log para revisar la generacion de la clave aleatoria
-				$claveok = false;
-			}
-		} while(! $claveok);
-		
-		//Armo el mail nuevo
-		$asunto = 'Nueva contrase�a';
-		$cuerpo_mail = '<p>Se ha recibido su confirmaci�n exitosamente, su contrase�a fue cambiada a: </br>' .
-		$clave_tmp . '</br> Por favor en cuanto pueda cambiela a una contrase�a m�s segura. </br> Gracias. </p> ';
-		
-		//Cambio la clave del flaco, envio el nuevo mail y bloqueo el random
+		//bloqueo el random
 		toba::instancia()->get_db()->abrir_transaccion();
 		try {
-			//Recupero los dias de validez de la clave, si existe
-			$dias = toba_parametros::get_clave_validez_maxima(toba::proyecto()->get_id());
-			
-			//Seteo la clave para el usuario
-			toba_usuario::reemplazar_clave_vencida($clave_tmp, $datos_orig['id_usuario'], $dias, false);
-			toba_usuario::forzar_cambio_clave($datos_orig['id_usuario']);
-			
-			//Enviar nuevo mail con la clave temporaria
-			$mail = new toba_mail($datos_orig['email'], $asunto, $cuerpo_mail);
-			$mail->set_html(true);
-			$mail->enviar();
-
-			//Bloqueo el pedido para que no pueda ser reutilizado
 			$this->bloquear_random_utilizado($this->s__usuario, $this->randr);
+                        
 			toba::instancia()->get_db()->cerrar_transaccion();
 		} catch (toba_error $e) {
 			toba::instancia()->get_db()->abortar_transaccion();
@@ -331,6 +365,40 @@ class ci_recuperar_contrasenia extends toba_ci
 		$id = toba::instancia()->get_db()->sentencia_preparar($sql);
 		$rs = toba::instancia()->get_db()->sentencia_consultar($id, array('usuario'=>$usuario, 'random' => $random));
 		return $rs;
+	}
+        
+        function recuperar_datos_solicitud($usuario)
+	{
+                $usuario = quote($usuario);
+		$sql = "SELECT  usuario,
+                                random,
+                                email
+				FROM apex_usuario_pwd_reset
+				WHERE    usuario = $usuario
+				AND age(now() , validez)  < interval '1 day'
+				AND bloqueado = 0";
+
+		//toba::instancia()->get_db()->set_modo_debug(true, true);
+//		$id = toba::instancia()->get_db()->sentencia_preparar($sql);
+//		$rs = toba::instancia()->get_db()->sentencia_consultar($id, array('usuario'=>$usuario, 'random' => $random));
+		return toba::db()->consultar($sql);
+	}
+        
+        function recuperar_datos_solicitud_usuario($usuario)
+	{
+                $usuario = quote($usuario);
+		$sql = "SELECT  usuario,
+                                random,
+                                email
+				FROM apex_usuario_pwd_reset
+				WHERE    usuario = $usuario
+				AND age(now() , validez)  < interval '1 day'
+				AND bloqueado = 1";
+
+		//toba::instancia()->get_db()->set_modo_debug(true, true);
+//		$id = toba::instancia()->get_db()->sentencia_preparar($sql);
+//		$rs = toba::instancia()->get_db()->sentencia_consultar($id, array('usuario'=>$usuario, 'random' => $random));
+		return toba::db()->consultar($sql);
 	}
 
 	function bloquear_random_utilizado($usuario, $random)

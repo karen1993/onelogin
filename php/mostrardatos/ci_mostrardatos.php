@@ -241,7 +241,7 @@ class ci_mostrardatos extends onelogin_ci
             else {
                 $datos = $this->dep('datos')->tabla('solicitud_usuario')->get_solicitudes();
             }
-
+//            $this->dep('cuadro_solicitud')->evento('eliminar')->ocultar();
             $cuadro->set_datos($datos);
         }
         
@@ -371,7 +371,7 @@ class ci_mostrardatos extends onelogin_ci
                 
                 if(!$es_usuario) {
                     
-                    $sql = "INSERT INTO desarrollo.apex_usuario(
+                    $sql = "INSERT INTO apex_usuario(
                             usuario, clave, nombre, email, autentificacion, bloqueado, parametro_a,
                             parametro_b, parametro_c, solicitud_registrar, solicitud_obs_tipo_proyecto,
                             solicitud_obs_tipo, solicitud_observacion, usuario_tipodoc, pre,
@@ -381,13 +381,13 @@ class ci_mostrardatos extends onelogin_ci
             
                     toba::db()->consultar($sql);
                 
-                    $sql2 = "INSERT INTO desarrollo.apex_usuario_proyecto(
+                    $sql2 = "INSERT INTO apex_usuario_proyecto(
                                 proyecto, usuario_grupo_acc, usuario, usuario_perfil_datos)
                             VALUES ('$datos[id_sistema]','$datos[id_perfil_funcional]', '$nom_usuario', null)";
             
                     toba::db()->consultar($sql2);
                 
-                    $sql3 = "INSERT INTO desarrollo.apex_usuario_proyecto_perfil_datos(
+                    $sql3 = "INSERT INTO apex_usuario_proyecto_perfil_datos(
                                 proyecto, usuario_perfil_datos, usuario)
                             VALUES ('$datos[id_sistema]','$datos[id_perfil_datos]', '$nom_usuario')";
             
@@ -403,13 +403,13 @@ class ci_mostrardatos extends onelogin_ci
                 }
                 else {
                     
-                    $sql = "INSERT INTO desarrollo.apex_usuario_proyecto(
+                    $sql = "INSERT INTO apex_usuario_proyecto(
                                 proyecto, usuario_grupo_acc, usuario, usuario_perfil_datos)
                             VALUES ('$datos[id_sistema]','$datos[id_perfil_funcional]', '$nom_usuario', null)";
             
                     toba::db()->consultar($sql);
                 
-                    $sql2 = "INSERT INTO desarrollo.apex_usuario_proyecto_perfil_datos(
+                    $sql2 = "INSERT INTO apex_usuario_proyecto_perfil_datos(
                                 proyecto, usuario_perfil_datos, usuario)
                             VALUES ('$datos[id_sistema]','$datos[id_perfil_datos]', '$nom_usuario')";
             
@@ -417,9 +417,9 @@ class ci_mostrardatos extends onelogin_ci
                 
                     toba::notificacion()->agregar(utf8_decode('El usuario se creó correctamente.'), 'info');
                     
-                    $cuerpo_mail = '<p>La solicitud de usuario ya ha sido atendida, puede ingresar al modulo correspondiente '
+                    $cuerpo_mail = utf8_decode('<p>La solicitud de usuario ya ha sido atendida, puede ingresar al modulo correspondiente '
                             . 'con el usuario y contrasenia de Mocovi.'
-                            . '<br><br>Saludos cordiales. </p>';
+                            . '<br><br>Saludos cordiales. </p>');
                 }
             }
             
@@ -432,7 +432,7 @@ class ci_mostrardatos extends onelogin_ci
             $info_usuario = toba::instancia()->get_info_usuario($nom_usuario); 
             $mail_usuario = $info_usuario['email'];
             
-            $asunto = 'Solicitud de usuario';
+            $asunto = 'Solicitud de Usuario';
             
             toba::instancia()->get_db()->abrir_transaccion();
                 
