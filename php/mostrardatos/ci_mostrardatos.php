@@ -395,10 +395,10 @@ class ci_mostrardatos extends onelogin_ci
                 
                     toba::notificacion()->agregar(utf8_decode('El usuario se creó correctamente.'), 'info');
                     $link = '<a href= http://mocovi.uncoma.edu.ar/>MOCOVI</a>';
-                    $cuerpo_mail = '<p>Se ha generado el usuario solicitado con los siguientes datos <strong>Usuario: '.
-                            $nom_usuario.' Contrasenia: '.$datos['clave'].'</strong>.'
+                    $cuerpo_mail = utf8_decode('<p>Se ha generado el usuario solicitado con los siguientes datos <strong>Usuario: '.
+                            $nom_usuario.' Contraseña: '.$datos['clave'].'</strong>.'
                             . '<div> Puede ingresar accediendo al siguiente link: '.$link.'</br></br></div>'
-                            . ' <div><br><br>Saludos cordiales.</div></p>';
+                            . ' <div><br><br>Saludos cordiales.</div></p>');
         
                 }
                 else {
@@ -418,7 +418,7 @@ class ci_mostrardatos extends onelogin_ci
                     toba::notificacion()->agregar(utf8_decode('El usuario se creó correctamente.'), 'info');
                     
                     $cuerpo_mail = utf8_decode('<p>La solicitud de usuario ya ha sido atendida, puede ingresar al modulo correspondiente '
-                            . 'con el usuario y contrasenia de Mocovi.'
+                            . 'con el usuario y contraseña de Mocovi.'
                             . '<br><br>Saludos cordiales. </p>');
                 }
             }
