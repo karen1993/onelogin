@@ -6,7 +6,7 @@ class ci_recuperar_contrasenia extends toba_ci
 	protected $randr;
 	protected $s__email;
 	private $pregunta;
-        private $contador;
+        private $contador = 0;
 	
 	function ini()
 	{
@@ -68,24 +68,20 @@ class ci_recuperar_contrasenia extends toba_ci
 	function evt__form_token__confirmar($datos)
 	{
             $datos_usu = $this->recuperar_datos_solicitud($this->s__usuario);
-		if($datos_usu[0]['random'] == $datos['token']) {
-                    $this->contador = 0;
-                    $this->randr = $datos_usu[0]['random'];
-                    $this->set_pantalla('pant_inicial');
-                }
-                else {
-                    $this->contador++;
-                    print_r($this->contador);
-                    
-                    if($this->contador == 3){
-                        $this->set_pantalla('pant_inicial');
-                    }
-                    else {
-                        $this->set_pantalla('pant_token');
-                        throw new toba_error_autenticacion(utf8_decode('No se suministro un token válido, vuelva a ingresar'));
-                    }
-                    
-                 }
+            if($datos_usu[0]['random'] == $datos['token']) {
+                $this->contador = 0;
+                $this->randr = $datos_usu[0]['random'];
+                $this->set_pantalla('pant_inicial');
+            }
+            else {
+                
+                $this->contador=1;
+                print_r($this->contador);
+                throw new toba_error_autenticacion(utf8_decode('No se suministro un token válido, vuelva a ingresar o presione el botón REINICIAR CAMBIO '
+                        . 'para volver a solicitar la nueva contraseña'));
+            }
+            
+            
 	}
         
 	//-----------------------------------------------------------------------------------
@@ -111,7 +107,7 @@ class ci_recuperar_contrasenia extends toba_ci
 	//-----------------------------------------------------------------------------------
 	function evt__form_cambio_clave__aceptar($datos)
         {
-            ini_set('error_reporting', E_ALL);      //Esto para que en el Server, como esta en produccion, largue errores que esten pasando..
+//            ini_set('error_reporting', E_ALL);      //Esto para que en el Server, como esta en produccion, largue errores que esten pasando..
             
             if($datos['clave_nueva']==$datos['repite_clave'])
             {
@@ -165,7 +161,7 @@ class ci_recuperar_contrasenia extends toba_ci
             }
             else
             {
-		$this->resetear();
+		$this->set_pantalla('cambio_clave');
                 toba::notificacion()->agregar('Las claves nuevas no Coinciden', 'error');
             }
         }
@@ -194,6 +190,7 @@ class ci_recuperar_contrasenia extends toba_ci
         {
             $this->set_pantalla('cambio_clave');
         }
+       
 	
 	//-----------------------------------------------------------------------------------
 	//---- Configuraciones --------------------------------------------------------------
@@ -224,6 +221,12 @@ class ci_recuperar_contrasenia extends toba_ci
         function conf__pant_token(toba_ei_pantalla $pantalla)
 	{
             $pantalla->set_descripcion(utf8_decode('Ingrese el token enviado a su correo electrónico'));
+//            if($this->contador == 0){
+//                $this->evento('reiniciar')->ocultar();
+//            }
+//            else {
+//                $this->evento('reiniciar')->mostrar();
+//            }
 	}
         
         function conf__cambio_clave(toba_ei_pantalla $pantalla)
@@ -279,7 +282,7 @@ class ci_recuperar_contrasenia extends toba_ci
                 
 		//Se envia el mail a la direccion especificada por el usuario.
 		$asunto =utf8_decode('Solicitud de cambio de contraseña');
-		$cuerpo_mail = utf8_decode('<p>Este mail fue enviado a esta cuenta porque se <strong>solicitó un cambio de contraseña</strong> para el usuario: <strong>'.$this->s__usuario. ' </strong>'
+		$cuerpo_mail = utf8_decode('<p>Este mail fue enviado a esta cuenta porque se <strong>solicitó un cambio de contraseña</strong> para el usuario: <strong>'.$this->s__usuario. '.</strong>'
                         . ' Si usted solicitó dicho cambio copie el siguiente token: <br><br>'.$tmp_rand.' <br><br>en el campo actual.</p>');
 
 		//Guardo el random asociado al usuario y envio el mail
@@ -410,6 +413,8 @@ class ci_recuperar_contrasenia extends toba_ci
 		$id = toba::instancia()->get_db()->sentencia_preparar($sql);
 		$rs = toba::instancia()->get_db()->sentencia_ejecutar($id, array('usuario'=>$usuario, 'random' => $random));
 	}
+        
+        
 }
 ?>
 

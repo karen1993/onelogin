@@ -21,9 +21,11 @@ INSERT INTO apex_objeto (proyecto, objeto, anterior, identificador, reflexivo, c
 	NULL, --objeto_categoria_proyecto
 	NULL, --objeto_categoria
 	'Recordatorio Password - form_cambio_clave', --nombre
-	NULL, --titulo
+	'Cambio de Clave', --titulo
 	'0', --colapsable
-	NULL, --descripcion
+	'La clave del usuario debe tener al menos 8 caracteres.
+La clave del usuario debe estar compuesta por caracteres, digitos 
+y simbolos especiales, no se pueden repetir caracteres adyacentes.', --descripcion
 	'onelogin', --fuente_datos_proyecto
 	'onelogin', --fuente_datos
 	NULL, --solicitud_registrar

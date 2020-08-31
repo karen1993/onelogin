@@ -119,7 +119,7 @@ class toba_onelog_uncoma extends toba_tp_basico
 
 	function pre_contenido()
 	{
-            echo "<link rel=\"stylesheet\" href=\"css/bootstrap.min.css\">";
+           // echo "<link rel=\"stylesheet\" href=\"css/bootstrap.min.css\">";
                 
 		//echo "<div>versi�n ".toba::proyecto()->get_version()."</div>";
 		//echo "</div>";
@@ -130,7 +130,7 @@ class toba_onelog_uncoma extends toba_tp_basico
 	{
                 echo "<a href='?ai=onelogin||1002000007&tcm=previsualizacion&tm=1' type='button' class='btn btn-default'> Recuperar Contrasenia </a>";
 		
-                echo "<a href='?ai=onelogin||1002000005&tcm=previsualizacion&tm=1' type='button' class='btn btn-primary'> Solicite su usuario AQUI </a>";
+                echo "<a href='?ai=onelogin||1002000005&tcm=previsualizacion&tm=1' type='button' class='btn btn-primary mycustombtn'> Solicite su usuario AQUI </a>";
 		echo "</div>";		
 		echo "<div class='login-pie'>";
 		echo "<div>Desarrollado por <strong><a href='http://euclides.uncoma.edu.ar/' style='text-decoration: none' target='_blank'>EUCLIDES</a></strong></div>
