@@ -1,0 +1,39 @@
+<?php
+
+class dt_solicitud_usuario extends onelogin_datos_tabla 
+{
+   
+    
+    function get_listado($solicitud = null)
+    {
+        $sql = "SELECT 
+                    s.id_solicitud,
+                    s.nombre,
+                    s.apellido,
+                    s.nombre_usuario,
+                    s.id_estado,
+                    s.id_perfil_datos,
+                    s.id_perfil_funcional,
+                    s.id_sistema,
+                    s.correo
+                    
+                FROM solicitud_usuario  as s INNER JOIN estado as e ON (s.id_estado = e.id_estado)
+                WHERE s.id_solicitud = $solicitud ";
+        
+        return toba::db('onelogin_solicitud')->consultar($sql);
+    }
+    
+    function get_solicitudes($where = null) 
+    {
+        $sql = "SELECT  s.id_solicitud, s.nombre_usuario, s.id_sistema, est.estado 
+                FROM solicitud_usuario as s INNER JOIN estado as est ON (s.id_estado = est.id_estado)
+                ";
+        if (!is_null($where)) {
+            $sql .= "AND s.$where ";
+        }
+        return toba::db('onelogin_solicitud')->consultar($sql);
+    }
+}
+
+
+?>

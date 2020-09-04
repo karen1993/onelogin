@@ -112,7 +112,7 @@ class consultas_instancia
 		if (isset($fila['id'])) {
 			return $fila['id'];
 		} else {
-			throw new toba_error("No se encontro la sesión de la solicitud $id_solicitud");
+			throw new toba_error("No se encontro la sesiï¿½n de la solicitud $id_solicitud");
 		}
 	}
 
@@ -382,6 +382,20 @@ class consultas_instancia
 			return false;
 		}
 	}
+        
+        static function get_es_usuario($email) 
+        {
+            $email = quote($email);
+            $sql = "SELECT usuario, email, nombre
+                    FROM apex_usuario
+                    WHERE email = $email ";
+            $rs = toba::db()->consultar($sql);
+            if($rs != null) {
+                return true;
+            } else {
+                return false;
+            }
+        }
 	
 	//---------------------------------------------------------------------
 	//------ Perfil Funcional ---------------------------------------------
@@ -435,6 +449,20 @@ class consultas_instancia
 		return toba::db()->consultar($sql);
 	}
 	
+        
+        static function get_grupo_acceso($proyecto, $perfil)
+	{
+		$proyecto = quote($proyecto);
+		$perfil = quote($perfil);
+		$sql = "SELECT 	nombre 
+                                 
+				FROM 	apex_usuario_grupo_acc
+				WHERE 	proyecto = $proyecto
+				AND 	usuario_grupo_acc = $perfil";
+                $perfil_funcional = toba::db()->consultar($sql);
+		return $perfil_funcional[0]['nombre'];
+	}
+        
 	static function get_descripcion_perfil_datos($proyecto, $perfil)
 	{
 		$proyecto = quote($proyecto);
@@ -445,6 +473,18 @@ class consultas_instancia
 				WHERE 	proyecto = $proyecto
 				AND 	usuario_perfil_datos = $perfil";
 		return toba::db()->consultar($sql);
+	}
+        
+        static function get_perfil_datos($proyecto, $perfil)
+	{
+		$proyecto = quote($proyecto);
+		$perfil = quote($perfil);
+		$sql = "SELECT 	nombre 
+				FROM 	apex_usuario_perfil_datos
+				WHERE 	proyecto = $proyecto
+				AND 	usuario_perfil_datos = $perfil";
+                $perfil_datos = toba::db()->consultar($sql);
+		return $perfil_datos[0]['nombre'];
 	}
 
 	//---------------------------------------------------------------------
@@ -506,6 +546,20 @@ class consultas_instancia
 		return $datos;
 	}
 	
+        static function get_perfil_datos_asociado($proyecto,$usuario)
+        {
+            $proyecto = quote($proyecto);
+            $usuario = quote($usuario);
+            
+            $sql = "SELECT 
+                        proyecto,
+                        usuario_perfil_datos,
+                        usuario
+                    FROM apex_usuario_proyecto_perfil_datos
+                    WHERE proyecto = $proyecto AND usuario = $usuario";
+            return toba::db()->consultar($sql);
+        }
+        
 	//---------------------------------------------------------------------
 	//------ Servicios Web ------------------------------------------
 	//---------------------------------------------------------------------		
@@ -524,5 +578,28 @@ class consultas_instancia
 		}
 		return toba::db()->consultar($sql);		
 	}
+        
+        //---------------------------------------------------------------------
+        //------------Solicitudes de usuario----------------------------------
+        //---------------------------------------------------------------------
+        static function existe_usuario_solicitud($usuario)
+        {
+            $existe = 0;
+            $sql = "SELECT 
+                    s.id_solicitud,
+                    s.nombre_usuario,
+                    e.id_estado,
+                    s.id_sistema
+                    
+                FROM solicitud_usuario  as s INNER JOIN estado as e ON (s.id_estado = e.id_estado) ";
+        
+            $solicitudes = toba::db('onelogin_solicitud')->consultar($sql);
+            foreach ($solicitudes as $solicitud) {
+                if($solicitud['nombre_usuario'] == $usuario) {
+                    $existe = 1;
+                }
+            }
+            return $existe;
+        }
 }
 ?>
