@@ -371,13 +371,15 @@ class ci_mostrardatos extends onelogin_ci
                 
                 if(!$es_usuario) {
                     
+                    $nombre = $datos['nombre'].' '.$datos['apellido'];
+                    
                     $sql = "INSERT INTO apex_usuario(
                             usuario, clave, nombre, email, autentificacion, bloqueado, parametro_a,
                             parametro_b, parametro_c, solicitud_registrar, solicitud_obs_tipo_proyecto,
                             solicitud_obs_tipo, solicitud_observacion, usuario_tipodoc, pre,
                             ciu, suf, telefono, vencimiento, dias, hora_entrada, hora_salida,
                             ip_permitida, forzar_cambio_pwd)
-                    VALUES ('$nom_usuario','$clave', '$nom_usuario', '$solicitud[correo]', 'md5',0, null,null, null, null, null,null, null, null, null,null, null, null, null, null, null, null,null, 0)";
+                    VALUES ('$nom_usuario','$clave', '$nombre', '$solicitud[correo]', 'md5',0, null,null, null, null, null,null, null, null, null,null, null, null, null, null, null, null,null, 1)";
             
                     toba::db()->consultar($sql);
                 
@@ -396,7 +398,7 @@ class ci_mostrardatos extends onelogin_ci
                     toba::notificacion()->agregar(utf8_decode('El usuario se creó correctamente.'), 'info');
                     $link = '<a href= http://mocovi.uncoma.edu.ar/>MOCOVI</a>';
                     $cuerpo_mail = utf8_decode('<p>Se ha generado el usuario solicitado con los siguientes datos <strong>Usuario: '.
-                            $nom_usuario.' Contraseña: '.$datos['clave'].'</strong>.'
+                            $nom_usuario.' Contraseña: '.$datos['clave'].'</strong>. Al ingresar al sistema deberá cambiar la contraseña, se solicita que lo haga lo antes posible. '
                             . '<div> Puede ingresar accediendo al siguiente link: '.$link.'</br></br></div>'
                             . ' <div><br><br>Saludos cordiales.</div></p>');
         

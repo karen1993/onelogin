@@ -49,25 +49,30 @@ class ci_solicitud_usuarios extends onelogin_ci
         $datos['nombre'] = strtolower($datos['nombre']);
         $datos['apellido'] = strtolower($datos['apellido']);
         $usuario = $datos['nombre'][0].$datos['apellido'];
+        $es_usuario = consultas_instancia::get_es_usuario($datos['correo']);
         $usuario_en_solicitud = consultas_instancia::existe_usuario_solicitud($usuario);
-        $usuario_existente = consultas_instancia::get_existe_usuario($usuario);
+        $nomb_usuario_existente = consultas_instancia::get_existe_usuario($usuario);
         $num = 01;
-        while($usuario_existente == 1 || $usuario_en_solicitud == 1)
-        {
-            $usuario = $usuario.$num;
-            $usuario_existente = consultas_instancia::get_existe_usuario($usuario);
-            $usuario_en_solicitud = consultas_instancia::existe_usuario_solicitud($usuario);
-            $num++;
-        }
-        
-        $datos['nombre_usuario'] = $usuario;
-        $datos['clave'] = $datos['nombre'].'.'.date('Y');
-        $this->dep('datos')->tabla('solicitud_usuario')->set($datos);
-        $this->dep('datos')->tabla('solicitud_usuario')->sincronizar();
-        $this->dep('datos')->tabla('solicitud_usuario')->resetear();
+        if(!$es_usuario) {
+            while($nomb_usuario_existente == 1 || $usuario_en_solicitud == 1)
+            {
+                $usuario = $usuario.$num;
+                $nomb_usuario_existente = consultas_instancia::get_existe_usuario($usuario);
+                $usuario_en_solicitud = consultas_instancia::existe_usuario_solicitud($usuario);
+                $num++;
+            }
+            $datos['nombre_usuario'] = $usuario;
+            $datos['clave'] = $datos['nombre'].'.'.date('Y');
+            $this->dep('datos')->tabla('solicitud_usuario')->set($datos);
+            $this->dep('datos')->tabla('solicitud_usuario')->sincronizar();
+            $this->dep('datos')->tabla('solicitud_usuario')->resetear();
            
-        toba::notificacion()->agregar('La solicitud de usuario se ha realizado correctamente. En breve recibira un mail para la confirmacion de la solicitud', 'info');
-            
+            toba::notificacion()->agregar('La solicitud de usuario se ha realizado correctamente. En breve recibira un mail para la confirmacion de la solicitud', 'info');
+
+        } else {
+            throw new toba_error('Usted ya tiene un usuario, ingrese al sistema y complete el formulario de solicitud correspondiente');
+        }
+                    
         
 
     }

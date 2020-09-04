@@ -314,19 +314,6 @@ class ci_login extends toba_ci
 	{
 		$this->set_pantalla('login');
 	}
-
-
-        
-        //----------------Eventos CI-----------------------------------------
-        function evt__registrar()
-        {
-              echo toba_js::abrir();
-                
-                echo 'toba.ir_a_operacion("onelogin", "2", false)';
-                
-              echo toba_js::cerrar();
-              
-        }
         
         //-------------------------------------------------------------------
 	

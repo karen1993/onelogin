@@ -382,6 +382,20 @@ class consultas_instancia
 			return false;
 		}
 	}
+        
+        static function get_es_usuario($email) 
+        {
+            $email = quote($email);
+            $sql = "SELECT usuario, email, nombre
+                    FROM apex_usuario
+                    WHERE email = $email ";
+            $rs = toba::db()->consultar($sql);
+            if($rs != null) {
+                return true;
+            } else {
+                return false;
+            }
+        }
 	
 	//---------------------------------------------------------------------
 	//------ Perfil Funcional ---------------------------------------------

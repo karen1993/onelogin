@@ -32,10 +32,10 @@ class ci_recuperar_contrasenia extends toba_ci
 	function conf__form_usuario(toba_ei_formulario $form)
 	{
 		//Probablemente esto vaya vacio a excepcion del usuario si es que se pasa
-		if (isset($this->s__usuario) && (!is_null($this->s__usuario))) {
-			$form->set_datos_defecto(array('usuario' => $this->s__usuario));
-			$form->set_solo_lectura(array('usuario'));
-		}
+//		if (isset($this->s__usuario) && (!is_null($this->s__usuario))) {
+//			$form->set_datos_defecto(array('usuario' => $this->s__usuario));
+//			$form->set_solo_lectura(array('usuario'));
+//		}
 	}
 
 	function evt__form_usuario__enviar($datos)
@@ -190,6 +190,13 @@ class ci_recuperar_contrasenia extends toba_ci
         {
             $this->set_pantalla('cambio_clave');
         }
+        
+        function evt__volver()
+        {
+            echo toba_js::abrir();
+            echo 'toba.ir_a_operacion("onelogin", "1000292", false) ';
+            echo toba_js::cerrar();
+        }
        
 	
 	//-----------------------------------------------------------------------------------
@@ -203,6 +210,7 @@ class ci_recuperar_contrasenia extends toba_ci
 			$pantalla->eliminar_dep('form_usuario');
 			$this->disparar_confirmacion_cambio();
                         $this->evento('nueva_clave')->mostrar();
+                        $this->evento('volver')->ocultar();
                         $pantalla->set_descripcion(utf8_decode('Presione el botón para ingresar la nueva contraseña'));
 		}
                 else {
@@ -214,19 +222,14 @@ class ci_recuperar_contrasenia extends toba_ci
 	{
 
             $pantalla->eliminar_dep('form_pregunta');
-            $pantalla->set_descripcion(utf8_decode('Presione el botón para continuar con el proceso'));
+            $pantalla->set_descripcion(utf8_decode('Presione el botón CONTINUAR para continuar con el proceso, caso contrario presione CANCELAR'));
 
 	}
         
         function conf__pant_token(toba_ei_pantalla $pantalla)
 	{
             $pantalla->set_descripcion(utf8_decode('Ingrese el token enviado a su correo electrónico'));
-//            if($this->contador == 0){
-//                $this->evento('reiniciar')->ocultar();
-//            }
-//            else {
-//                $this->evento('reiniciar')->mostrar();
-//            }
+
 	}
         
         function conf__cambio_clave(toba_ei_pantalla $pantalla)
@@ -314,17 +317,7 @@ class ci_recuperar_contrasenia extends toba_ci
 	* Impacta en la base para cambiar la contrase�a del usuario
 	*/
 	function disparar_confirmacion_cambio()
-	{
-		//Recupero mail del usuario junto con el hash de confirmacion
-//		$datos_rs = $this->recuperar_datos_solicitud_cambio($this->s__usuario, $this->randr);
-//		if (empty($datos_rs)) {
-//			toba::logger()->debug(utf8_decode('Proceso de cambio de contraseña en base: El usuario o el token no coinciden' ));
-//			toba::logger()->var_dump(array('rnd' => $this->randr));
-//			throw new toba_error('Se produjo un error en el proceso de cambio, contactese con un administrador del sistema.');            
-//		} else {
-//			$datos_orig = current($datos_rs);
-//		}
-				
+	{			
 		//bloqueo el random
 		toba::instancia()->get_db()->abrir_transaccion();
 		try {
@@ -337,6 +330,7 @@ class ci_recuperar_contrasenia extends toba_ci
 			throw new toba_error('Se produjo un error en el proceso de cambio, contactese con un administrador del sistema.');
 		}
 	}
+        
 
 	//-----------------------------------------------------------------------------------------------------------------------------------------------------------------
 	//                                        METODOS PARA SQLs
@@ -381,9 +375,6 @@ class ci_recuperar_contrasenia extends toba_ci
 				AND age(now() , validez)  < interval '1 day'
 				AND bloqueado = 0";
 
-		//toba::instancia()->get_db()->set_modo_debug(true, true);
-//		$id = toba::instancia()->get_db()->sentencia_preparar($sql);
-//		$rs = toba::instancia()->get_db()->sentencia_consultar($id, array('usuario'=>$usuario, 'random' => $random));
 		return toba::db()->consultar($sql);
 	}
         
@@ -398,9 +389,6 @@ class ci_recuperar_contrasenia extends toba_ci
 				AND age(now() , validez)  < interval '1 day'
 				AND bloqueado = 1";
 
-		//toba::instancia()->get_db()->set_modo_debug(true, true);
-//		$id = toba::instancia()->get_db()->sentencia_preparar($sql);
-//		$rs = toba::instancia()->get_db()->sentencia_consultar($id, array('usuario'=>$usuario, 'random' => $random));
 		return toba::db()->consultar($sql);
 	}
 
