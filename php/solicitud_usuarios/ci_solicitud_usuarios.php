@@ -48,6 +48,7 @@ class ci_solicitud_usuarios extends onelogin_ci
         $datos['id_estado'] = 'PEND';
         $datos['nombre'] = strtolower($datos['nombre']);
         $datos['apellido'] = strtolower($datos['apellido']);
+        $datos['apellido'] = str_replace(' ', '', $datos['apellido']);
         $usuario = $datos['nombre'][0].$datos['apellido'];
         $es_usuario = consultas_instancia::get_es_usuario($datos['correo']);
         $usuario_en_solicitud = consultas_instancia::existe_usuario_solicitud($usuario);
