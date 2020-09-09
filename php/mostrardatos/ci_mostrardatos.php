@@ -186,28 +186,31 @@ class ci_mostrardatos extends onelogin_ci
         
         function conf__pant_edicion(toba_ei_pantalla $pantalla) {
             $perfil = toba::manejador_sesiones()->get_perfiles_funcionales()[0];
-            if($perfil != 'gestor' && $perfil != 'admin') {
-                $this->pantalla()->tab("pant_solicitudes")->ocultar();
+            if($perfil != null && ($perfil == 'gestor' || $perfil == 'admin')) {
+                $this->pantalla()->tab("pant_solicitudes")->mostrar();
             }
-//            else {
-//                $this->pantalla()->tab("pant_formulario")->ocultar();
-//            }
+            else {
+                $this->pantalla()->tab("pant_formulario")->ocultar();
+            }
         }
         
         function conf__pant_clave(toba_ei_pantalla $pantalla) {
             $perfil = toba::manejador_sesiones()->get_perfiles_funcionales()[0];
-            if($perfil != 'gestor' && $perfil != 'admin') {
-                $this->pantalla()->tab("pant_solicitudes")->ocultar();
+            if($perfil != null && ($perfil == 'gestor' || $perfil == 'admin')) {
+                $this->pantalla()->tab("pant_solicitudes")->mostrar();
             }
-//            else {
-//                $this->pantalla()->tab("pant_formulario")->ocultar();
-//            }
+            else {
+                $this->pantalla()->tab("pant_formulario")->ocultar();
+            }
         }
         
         function conf__pant_formulario(toba_ei_pantalla $pantalla) {
             $perfil = toba::manejador_sesiones()->get_perfiles_funcionales()[0];
-            if($perfil != 'gestor' && $perfil != 'admin') {
-                $this->pantalla()->tab("pant_solicitudes")->ocultar();
+            if($perfil != null && ($perfil == 'gestor' || $perfil == 'admin')) {
+                $this->pantalla()->tab("pant_solicitudes")->mostrar();
+            }
+            else {
+                $this->pantalla()->tab("pant_formulario")->ocultar();
             }
         }
         
