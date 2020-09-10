@@ -26,7 +26,11 @@ class formulario_ocultar_mostrar extends toba_ei_formulario
                                     this.ef('id_perfil_datos').mostrar();
                                     break;
                             }
-                        }    			
+                        } else {
+                            if(this.ef('id_sistema').get_estado()=='designa') {
+                                this.ef('id_perfil_datos').set_obligatorio(true);
+                            }
+                        }
                     } 
                    " ;
         }
