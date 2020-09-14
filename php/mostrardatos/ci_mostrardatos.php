@@ -196,7 +196,7 @@ class ci_mostrardatos extends onelogin_ci
                 $this->pantalla()->tab("pant_solicitudes")->mostrar();
             }
             else {
-                $this->pantalla()->tab("pant_formulario")->ocultar();
+                $this->pantalla()->tab("pant_solicitudes")->ocultar();
             }
         }
         
@@ -212,7 +212,7 @@ class ci_mostrardatos extends onelogin_ci
                 $this->pantalla()->tab("pant_solicitudes")->mostrar();
             }
             else {
-                $this->pantalla()->tab("pant_formulario")->ocultar();
+                $this->pantalla()->tab("pant_solicitudes")->ocultar();
             }
         }
         
@@ -228,7 +228,7 @@ class ci_mostrardatos extends onelogin_ci
                 $this->pantalla()->tab("pant_solicitudes")->mostrar();
             }
             else {
-                $this->pantalla()->tab("pant_formulario")->ocultar();
+                $this->pantalla()->tab("pant_solicitudes")->ocultar();
             }
         }
         
@@ -297,15 +297,21 @@ class ci_mostrardatos extends onelogin_ci
             $perfiles_funcionales = consultas_instancia::get_lista_grupos_acceso_proyecto($proyecto);
             $datos = array();
             $a = 0;
-            foreach($perfiles_funcionales as $perfil)
-            {
-                if($perfil['usuario_grupo_acc'] != 'admin') {
-                    $datos[$a]['perfil_funcional'] = $perfil['usuario_grupo_acc'];
-                    $datos[$a]['nombre'] = $perfil['nombre'];
-                    $a++;
+            if($proyecto == 'designa') {
+                $datos[0]['nombre'] = 'InvestigacionDirector';
+                $datos[0]['perfil_funcional'] = 'investigacion_director';
+            } else {
+                foreach($perfiles_funcionales as $perfil)
+                {
+                    if($perfil['usuario_grupo_acc'] != 'admin') {
+                        $datos[$a]['perfil_funcional'] = $perfil['usuario_grupo_acc'];
+                        $datos[$a]['nombre'] = $perfil['nombre'];
+                        $a++;
+                    }
                 }
             }
-        return $datos;
+        
+            return $datos;
         }
         
         //----------------------------------------------------------------------------------
