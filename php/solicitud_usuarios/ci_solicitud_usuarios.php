@@ -43,7 +43,6 @@ class ci_solicitud_usuarios extends onelogin_ci
                 }
                 $apellido = $this->convertir($apellido);
                 $nombre_compuesto = $this->buscar_espacio($datos['nombre']);
-                    
                 if($nombre_compuesto) {
                     $i = 0;
                     while($i < strlen($datos['nombre'])) {
@@ -53,10 +52,11 @@ class ci_solicitud_usuarios extends onelogin_ci
                             $i = strlen($datos['nombre']);
                         }
                         $i++;
-                    }
-                        
-                    $nombre = $this->convertir($nombre);
+                    }                    
+                } else {
+                    $nombre = $datos['nombre'];
                 }
+                $nombre = $this->convertir($nombre);
                 $usuario = strtolower($nombre[0].$apellido);
                 $es_usuario = consultas_instancia::get_es_usuario($datos['correo']);
                 $usuario_en_solicitud = consultas_instancia::existe_usuario_solicitud($usuario);
@@ -73,11 +73,11 @@ class ci_solicitud_usuarios extends onelogin_ci
                     $datos['nombre_usuario'] = $usuario;
                     
                     $datos['clave'] = $nombre.'.'.date('Y');
+                    toba::notificacion()->agregar('La solicitud de usuario se ha realizado correctamente. En breve recibira un mail para la confirmacion de la solicitud', 'info');
                     $this->dep('datos')->tabla('solicitud_usuario')->set($datos);
                     $this->dep('datos')->tabla('solicitud_usuario')->sincronizar();
                     $this->dep('datos')->tabla('solicitud_usuario')->resetear();
            
-                    toba::notificacion()->agregar('La solicitud de usuario se ha realizado correctamente. En breve recibira un mail para la confirmacion de la solicitud', 'info');
                     echo toba_js::abrir();
                     echo 'toba.ir_a_operacion("onelogin", "1000292", false) ';
                     echo toba_js::cerrar();
