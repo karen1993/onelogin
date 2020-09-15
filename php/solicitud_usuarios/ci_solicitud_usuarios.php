@@ -74,16 +74,22 @@ class ci_solicitud_usuarios extends onelogin_ci
                     
                     $datos['clave'] = $nombre.'.'.date('Y');
                     toba::notificacion()->agregar('La solicitud de usuario se ha realizado correctamente. En breve recibira un mail para la confirmacion de la solicitud', 'info');
+                    toba::notificacion()->mostrar();
                     $this->dep('datos')->tabla('solicitud_usuario')->set($datos);
                     $this->dep('datos')->tabla('solicitud_usuario')->sincronizar();
                     $this->dep('datos')->tabla('solicitud_usuario')->resetear();
-           
+                    
                     echo toba_js::abrir();
+//                    echo "notificacion.mostrar()";
                     echo 'toba.ir_a_operacion("onelogin", "1000292", false) ';
                     echo toba_js::cerrar();
                 } else {
                     throw new toba_error('Usted ya tiene un usuario, ingrese al sistema y complete el formulario de solicitud correspondiente');
+                    
                 }
+//                echo toba_js::abrir();
+//                echo 'toba.ir_a_operacion("onelogin", "1000292", false) ';
+//                echo toba_js::cerrar();
         }        
 
     }
