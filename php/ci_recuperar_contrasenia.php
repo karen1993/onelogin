@@ -147,10 +147,7 @@ class ci_recuperar_contrasenia extends toba_ci
                   toba_usuario::verificar_clave_no_utilizada($datos['clave_nueva'], $datos_orig['usuario'], $ultimas_claves);
                   toba_usuario::reemplazar_clave_vencida($datos['clave_nueva'], $datos_orig['usuario'], $dias);
                   $this->es_cambio_contrasenia = true;                //Bandera para el post_eventos
-                  toba::notificacion()->agregar('Modificacion realizada con Exito!', 'info');
-                  echo toba_js::abrir();
-                  echo 'toba.ir_a_operacion("onelogin", "1000292", false) ';
-                  echo toba_js::cerrar();
+                  echo '<script language="javascript">alert("Modificacion realizada con Exito!");window.location.href="?ai=onelogin||1000292&tcm=previsualizacion&tm=1"</script>';
               } catch(toba_error_pwd_conformacion_invalida $e) {
                   toba::logger()->info($e->getMessage());
                   toba::notificacion()->agregar($e->getMessage(), 'error');
