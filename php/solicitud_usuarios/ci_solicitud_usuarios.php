@@ -4,12 +4,14 @@ require_once('lib/consultas_instancia.php');
 class ci_solicitud_usuarios extends onelogin_ci
 {
 
+    public $verificar = false;
+    
     //----------------------------------------------------------------------------------
     //---------------Formulario Solicitud----------------------------------------------
     
     function conf__form_solicitud(toba_ei_formulario $form)
     {
-        
+      
     }
     
     function evt__form_solicitud__alta($datos)
@@ -73,24 +75,17 @@ class ci_solicitud_usuarios extends onelogin_ci
                     $datos['nombre_usuario'] = $usuario;
                     
                     $datos['clave'] = $nombre.'.'.date('Y');
-                    toba::notificacion()->agregar('La solicitud de usuario se ha realizado correctamente. En breve recibira un mail para la confirmacion de la solicitud', 'info');
-                    toba::notificacion()->mostrar();
                     $this->dep('datos')->tabla('solicitud_usuario')->set($datos);
                     $this->dep('datos')->tabla('solicitud_usuario')->sincronizar();
                     $this->dep('datos')->tabla('solicitud_usuario')->resetear();
                     
-                    echo toba_js::abrir();
-//                    echo "notificacion.mostrar()";
-                    echo 'toba.ir_a_operacion("onelogin", "1000292", false) ';
-                    echo toba_js::cerrar();
+                    echo '<script language="javascript">alert("La solicitud de usuario se ha realizado correctamente. En breve recibira un mail para la confirmacion de la solicitud");window.location.href="?ai=onelogin||1000292&tcm=previsualizacion&tm=1"</script>';
                 } else {
-                    throw new toba_error('Usted ya tiene un usuario, ingrese al sistema y complete el formulario de solicitud correspondiente');
-                    
+                    echo '<script language="javascript">alert("Usted ya tiene un usuario, ingrese al sistema y complete el formulario de solicitud correspondiente");window.location.href="?ai=onelogin||1000292&tcm=previsualizacion&tm=1"</script>';
                 }
-//                echo toba_js::abrir();
-//                echo 'toba.ir_a_operacion("onelogin", "1000292", false) ';
-//                echo toba_js::cerrar();
-        }        
+                          
+        } 
+           
 
     }
     
