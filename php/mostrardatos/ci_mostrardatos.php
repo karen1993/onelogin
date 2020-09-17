@@ -425,7 +425,8 @@ class ci_mostrardatos extends onelogin_ci
                     toba::notificacion()->agregar(utf8_decode('El usuario se creó correctamente.'), 'info');
                     $link = '<a href= http://mocovi.uncoma.edu.ar/>MOCOVI</a>';
                     $cuerpo_mail = utf8_decode('<p>Se ha generado el usuario solicitado con los siguientes datos <strong>Usuario: '.
-                            $nom_usuario.' Contraseña: '.$datos['clave'].'</strong>. Al ingresar al sistema deberá cambiar la contraseña, se solicita que lo haga lo antes posible. '
+                            $nom_usuario.' Contraseña: '.$datos['clave'].'</strong>. Al ingresar al sistema la primera vez, el mismo '
+                            . 'forzará un cambio de clave, la misma debe tener al menos 8 caracteres, entre letras mayúsculas, minúsculas, números y símbolos, no pudiendo repetir caracteres adyacentes. '
                             . '<div> Puede ingresar accediendo al siguiente link: '.$link.'</br></br></div>'
                             . ' <div><br><br>Saludos cordiales.</div></p>');
         
