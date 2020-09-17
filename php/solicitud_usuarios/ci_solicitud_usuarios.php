@@ -16,8 +16,8 @@ class ci_solicitud_usuarios extends onelogin_ci
     
     function evt__form_solicitud__alta($datos)
     {
-        $fecha = date('d-m-y');
-        $datos['timestamp'] = $fecha;        
+        $fecha = date('d-m-Y H:i:s');
+        $datos['timestamp'] = $fecha;     
         $datos['id_estado'] = 'PEND';
         $caracteres_permitidos_nom = $this->caracteres_permitidos($datos['nombre']);
         $caracteres_permitidos_ape = $this->caracteres_permitidos($datos['apellido']);
@@ -29,7 +29,7 @@ class ci_solicitud_usuarios extends onelogin_ci
                     $apellido = str_replace(' ', '', $datos['apellido']);
                     if(strlen($apellido) > 10)
                     {
-                        $apellido = ' ';
+                        $apellido = '';
                         $i = 0;
                         while($i < strlen($datos['apellido'])) {
                             if($datos['apellido'][$i] != ' ') {
