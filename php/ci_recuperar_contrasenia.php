@@ -179,7 +179,7 @@ class ci_recuperar_contrasenia extends toba_ci
 		
 		//Si llego hasta aca es porque la respuesta es correcta, sino explota en la modificacion del form        
 		$this->enviar_mail_aviso_cambio();
-		toba::notificacion()->agregar('Se ha enviado un mail a la cuenta especificada, por favor verifiquela', 'info');
+		toba::notificacion()->agregar('Se ha enviado un mail a la cuenta especificada, por favor verifique y copie el token enviado a la misma', 'info');
 		$this->set_pantalla('pant_token');
 	}
         
@@ -283,7 +283,7 @@ class ci_recuperar_contrasenia extends toba_ci
 		//Se envia el mail a la direccion especificada por el usuario.
 		$asunto =utf8_decode('Solicitud de cambio de contraseña');
 		$cuerpo_mail = utf8_decode('<p>Este mail fue enviado a esta cuenta porque se <strong>solicitó un cambio de contraseña</strong> para el usuario: <strong>'.$this->s__usuario. '.</strong>'
-                        . ' Si usted solicitó dicho cambio copie el siguiente token: <br><br>'.$tmp_rand.' <br><br>en el campo actual.</p>');
+                        . ' Si usted solicitó dicho cambio copie el siguiente token: <br><br>'.$tmp_rand.' <br><br>en el campo correspondiente.</p>');
 
 		//Guardo el random asociado al usuario y envio el mail
 		toba::instancia()->get_db()->abrir_transaccion();
