@@ -262,7 +262,6 @@ class ci_mostrardatos extends onelogin_ci
             else {
                 $datos = $this->dep('datos')->tabla('solicitud_usuario')->get_solicitudes();
             }
-//            $this->dep('cuadro_solicitud')->evento('eliminar')->ocultar();
             $cuadro->set_datos($datos);
         }
         
