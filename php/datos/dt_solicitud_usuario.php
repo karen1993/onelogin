@@ -25,6 +25,12 @@ class dt_solicitud_usuario extends onelogin_datos_tabla
     
     function get_solicitudes($where = null) 
     {
+        $pf = toba::manejador_sesiones()->get_perfiles_funcionales();
+        if(count($pf)>0){
+            $perfil=$pf[0];
+        }else{
+            $perfil=null;
+        }
         
         if (!is_null($where)) {
             if(strpos($where, '(') || strpos($where, 'id_sistema')) {
@@ -37,10 +43,19 @@ class dt_solicitud_usuario extends onelogin_datos_tabla
                 $where = "WHERE s." . $where;
             }
             
-        } 
-        $sql = "SELECT  s.id_solicitud, s.nombre_usuario, s.id_sistema, est.estado, timestamp 
-                FROM solicitud_usuario as s INNER JOIN estado as est ON (s.id_estado = est.id_estado)
-                " . $where;
+        }
+        if($perfil != null && $perfil == 'gestor_extension') {
+            $sql = "SELECT  s.id_solicitud, s.nombre_usuario, s.id_sistema, est.estado, timestamp 
+                    FROM solicitud_usuario as s INNER JOIN estado as est ON (s.id_estado = est.id_estado)
+                    WHERE s.id_sistema = 'extension' AND s.id_estado <> 'ATEN'
+                    " . $where;
+        } else {
+            $sql = "SELECT  s.id_solicitud, s.nombre_usuario, s.id_sistema, est.estado, timestamp 
+                    FROM solicitud_usuario as s INNER JOIN estado as est ON (s.id_estado = est.id_estado)
+                    s.id_estado <> 'ATEN'
+                    " . $where;
+        }
+        print_r(toba::db('onelogin_solicitud')->consultar($sql));
         return toba::db('onelogin_solicitud')->consultar($sql);
     }
 }
