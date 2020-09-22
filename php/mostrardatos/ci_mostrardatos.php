@@ -324,6 +324,15 @@ class ci_mostrardatos extends onelogin_ci
                 $this->dep('formulario_central')->colapsar();
             }
             
+            if ($this->dep('datos')->tabla('solicitud_usuario')->esta_cargada()) {
+                $datos = $this->dep('datos')->tabla('solicitud_usuario')->get();
+                if($datos['id_estado'] == 'APRB') {
+                    $this->verificar = true;
+                    $this->crear_usuario = true;
+                }
+                $form->set_datos($datos);
+            }
+            
             if(!$this->verificar)
             {
                 $this->dep('formulario_central')->evento('modificacion')->ocultar();
@@ -346,11 +355,7 @@ class ci_mostrardatos extends onelogin_ci
                 $form->ef('id_perfil_datos')->set_solo_lectura();
             }
                 
-            if ($this->dep('datos')->tabla('solicitud_usuario')->esta_cargada()) {
-                $datos = $this->dep('datos')->tabla('solicitud_usuario')->get();
-                
-                $form->set_datos($datos);
-            }
+            
         }
         
         function evt__formulario_central__verificar($datos)
