@@ -55,7 +55,6 @@ class dt_solicitud_usuario extends onelogin_datos_tabla
                     s.id_estado <> 'ATEN'
                     " . $where;
         }
-        print_r(toba::db('onelogin_solicitud')->consultar($sql));
         return toba::db('onelogin_solicitud')->consultar($sql);
     }
 }
