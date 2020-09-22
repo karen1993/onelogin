@@ -4,7 +4,7 @@
 ------------------------------------------------------------
 INSERT INTO apex_usuario_grupo_acc (proyecto, usuario_grupo_acc, nombre, nivel_acceso, descripcion, vencimiento, dias, hora_entrada, hora_salida, listar, permite_edicion, menu_usuario) VALUES (
 	'onelogin', --proyecto
-	'gestor_extensio', --usuario_grupo_acc
+	'gestor_extension', --usuario_grupo_acc
 	'Gestor de Extension', --nombre
 	NULL, --nivel_acceso
 	NULL, --descripcion
