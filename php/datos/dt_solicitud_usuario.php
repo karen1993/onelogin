@@ -52,7 +52,7 @@ class dt_solicitud_usuario extends onelogin_datos_tabla
         } else {
             $sql = "SELECT  s.id_solicitud, s.nombre_usuario, s.id_sistema, est.estado, timestamp 
                     FROM solicitud_usuario as s INNER JOIN estado as est ON (s.id_estado = est.id_estado)
-                    s.id_estado <> 'ATEN'
+                    WHERE s.id_estado <> 'ATEN'
                     " . $where;
         }
         return toba::db('onelogin_solicitud')->consultar($sql);
