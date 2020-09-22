@@ -192,7 +192,7 @@ class ci_mostrardatos extends onelogin_ci
                 $perfil=null;
             }
 
-            if($perfil != null && ($perfil == 'gestor' || $perfil == 'admin')) {
+            if($perfil != null && ($perfil == 'gestor' || $perfil == 'gestor_extension')) {
                 $this->pantalla()->tab("pant_solicitudes")->mostrar();
             }
             else {
@@ -208,7 +208,7 @@ class ci_mostrardatos extends onelogin_ci
                 $perfil=null;
             }
             
-            if($perfil != null && ($perfil == 'gestor' || $perfil == 'admin')) {
+            if($perfil != null && ($perfil == 'gestor' || $perfil == 'gestor_extension')) {
                 $this->pantalla()->tab("pant_solicitudes")->mostrar();
             }
             else {
@@ -224,7 +224,7 @@ class ci_mostrardatos extends onelogin_ci
                 $perfil=null;
             }
             
-            if($perfil != null && ($perfil == 'gestor' || $perfil == 'admin')) {
+            if($perfil != null && ($perfil == 'gestor' || $perfil == 'gestor_extension')) {
                 $this->pantalla()->tab("pant_solicitudes")->mostrar();
             }
             else {
@@ -451,7 +451,7 @@ class ci_mostrardatos extends onelogin_ci
                             . '<br><br>Saludos cordiales. </p>');
                 }
             }
-            
+            $datos['id_estado'] = 'ATEN';
             
             $this->dep('datos')->tabla('solicitud_usuario')->set($datos);
             $this->dep('datos')->tabla('solicitud_usuario')->sincronizar();
@@ -489,6 +489,9 @@ class ci_mostrardatos extends onelogin_ci
             else {
                 $this->mostrar_solicitud = 0;
                 $this->crear_usuario = false;
+                if($datos['id_estado'] == 'RECH') {
+                    $datos['id_estado'] = 'ATEN';
+                }
             }
             $this->dep('datos')->tabla('solicitud_usuario')->set($datos);
             $this->dep('datos')->tabla('solicitud_usuario')->sincronizar();
