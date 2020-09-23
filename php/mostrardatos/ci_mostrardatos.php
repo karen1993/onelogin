@@ -329,6 +329,12 @@ class ci_mostrardatos extends onelogin_ci
                 if($datos['id_estado'] == 'APRB') {
                     $this->verificar = true;
                     $this->crear_usuario = true;
+                } else {
+                    if($datos['id_estado'] == 'ATEN' || $datos['id_estado'] == 'RECH') {
+                        $this->verificar = true;
+                        $this->dep('formulario_central')->evento('modificacion')->ocultar();
+                        $form->ef('id_estado')->set_solo_lectura();
+                    }
                 }
                 $form->set_datos($datos);
             }
@@ -455,8 +461,9 @@ class ci_mostrardatos extends onelogin_ci
                             . 'con el usuario y contraseña de Mocovi.'
                             . '<br><br>Saludos cordiales. </p>');
                 }
+                $datos['id_estado'] = 'ATEN';
             }
-            $datos['id_estado'] = 'ATEN';
+            
             
             $this->dep('datos')->tabla('solicitud_usuario')->set($datos);
             $this->dep('datos')->tabla('solicitud_usuario')->sincronizar();
