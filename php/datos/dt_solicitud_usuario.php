@@ -33,28 +33,34 @@ class dt_solicitud_usuario extends onelogin_datos_tabla
         }
         
         if (!is_null($where)) {
-            if(strpos($where, '(') || strpos($where, 'id_sistema')) {
-                if(strpos($where, '(')) {
+            if(strpos($where, 'OR') || strpos($where, 'id_sistema')) {
+                if(strpos($where, 'id_estado')) {
                     $where = str_replace('id_estado', 's.id_estado', $where);
                 }
-                $where = "WHERE " . $where;
+                if($perfil != null && $perfil == 'gestor_extension') {
+                    $where = "WHERE " . $where . " AND s.id_sistema <> 'designa' ";
+                } else {
+                    $where = "WHERE " . $where;
+                }
             } else {
-                
-                $where = "WHERE s." . $where;
+                    if($perfil != null && $perfil == 'gestor_extension') {
+                        $where = "WHERE s." . $where . " AND s.id_sistema <> 'designa' ";
+                    } else {
+                        $where = "WHERE s." . $where;
+                    }
+            }
+            
+        } else {
+            if($perfil != null && $perfil == 'gestor_extension') {
+                $where = "WHERE s.id_sistema = 'extension' AND s.id_estado <> 'ATEN' AND s.id_estado <> 'RECH'";
+            } else {
+                $where = "WHERE s.id_estado <> 'ATEN' AND s.id_estado <> 'RECH'";
             }
             
         }
-        if($perfil != null && $perfil == 'gestor_extension') {
-            $sql = "SELECT  s.id_solicitud, s.nombre_usuario, s.id_sistema, est.estado, timestamp 
-                    FROM solicitud_usuario as s INNER JOIN estado as est ON (s.id_estado = est.id_estado)
-                    WHERE s.id_sistema = 'extension' AND s.id_estado <> 'ATEN'
-                    " . $where;
-        } else {
-            $sql = "SELECT  s.id_solicitud, s.nombre_usuario, s.id_sistema, est.estado, timestamp 
-                    FROM solicitud_usuario as s INNER JOIN estado as est ON (s.id_estado = est.id_estado)
-                    WHERE s.id_estado <> 'ATEN'
-                    " . $where;
-        }
+        $sql = "SELECT  s.id_solicitud, s.nombre_usuario, s.id_sistema, est.estado, timestamp 
+                FROM solicitud_usuario as s INNER JOIN estado as est ON (s.id_estado = est.id_estado) " . $where;
+        
         return toba::db('onelogin_solicitud')->consultar($sql);
     }
 }
