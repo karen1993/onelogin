@@ -374,6 +374,7 @@ class ci_mostrardatos extends onelogin_ci
         function evt__formulario_central__verificar($datos)
         {
             $perfil_funcional_asoc = consultas_instancia::get_lista_grupos_acceso_usuario_proyecto($datos['nombre_usuario'],$datos['id_sistema']);
+            print_r($perfil_funcional_asoc);
             if($perfil_funcional_asoc == null)
             {
                 $this->dep('formulario_central')->evento('modificacion')->mostrar();
@@ -394,6 +395,7 @@ class ci_mostrardatos extends onelogin_ci
         
         function evt__formulario_central__crear($datos) 
         {
+            print_r($datos);            exit();
             $perfil_funcional_asoc = consultas_instancia::get_lista_grupos_acceso_usuario_proyecto($datos['nombre_usuario'],$datos['id_sistema']);
             $usuarios_existentes = consultas_instancia::get_lista_usuarios();
             $solicitud = $this->dep('datos')->tabla('solicitud_usuario')->get();
