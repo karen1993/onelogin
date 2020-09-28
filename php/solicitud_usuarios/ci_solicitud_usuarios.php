@@ -60,7 +60,7 @@ class ci_solicitud_usuarios extends onelogin_ci
                 }
                 $nombre = $this->convertir($nombre);
                 $usuario = strtolower($nombre[0].$apellido);
-                $solicitud_existente = consultas_instancia::existe_solicitud($datos['correo'],$datos['id_sistema']);
+                $solicitud_existente = consultas_instancia::existe_solicitud_form_publico($datos['correo']);
                 if($solicitud_existente != null) {
                     echo utf8_decode('<script language="javascript">alert("Usted ya tiene una solicitud pendiente, aguarde a que la misma sea atendida y recibirá un email con la información correspondiente");window.location.href="?ai=onelogin||1000292&tcm=previsualizacion&tm=1"</script>');
                 } else {

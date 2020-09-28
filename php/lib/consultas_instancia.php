@@ -623,5 +623,16 @@ class consultas_instancia
             return toba::db('onelogin_solicitud')->consultar($sql);
             
         }
+        
+        static function existe_solicitud_form_publico($email)
+        {
+            $sql = "SELECT
+                    correo
+                FROM solicitud_usuario  
+                WHERE correo = '$email'";
+//            print_r(toba::db('onelogin_solicitud')->consultar($sql));            exit();
+            return toba::db('onelogin_solicitud')->consultar($sql);
+            
+        }
 }
 ?>
