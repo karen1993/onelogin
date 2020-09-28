@@ -374,7 +374,6 @@ class ci_mostrardatos extends onelogin_ci
         function evt__formulario_central__verificar($datos)
         {
             $perfil_funcional_asoc = consultas_instancia::get_lista_grupos_acceso_usuario_proyecto($datos['nombre_usuario'],$datos['id_sistema']);
-            print_r($perfil_funcional_asoc);
             if($perfil_funcional_asoc == null)
             {
                 $this->dep('formulario_central')->evento('modificacion')->mostrar();
@@ -395,13 +394,12 @@ class ci_mostrardatos extends onelogin_ci
         
         function evt__formulario_central__crear($datos) 
         {
-            print_r($datos);            exit();
             $perfil_funcional_asoc = consultas_instancia::get_lista_grupos_acceso_usuario_proyecto($datos['nombre_usuario'],$datos['id_sistema']);
             $usuarios_existentes = consultas_instancia::get_lista_usuarios();
             $solicitud = $this->dep('datos')->tabla('solicitud_usuario')->get();
             $es_usuario = false;
             $nom_usuario = $datos[nombre_usuario];
-            
+            $usuario_creado = consultas_instancia::get_es_usuario($datos['correo']);
             if($solicitud['clave'] != null) {
                 $datos['clave'] = $solicitud['clave'];
                 $clave = md5($datos[clave]);
@@ -415,7 +413,7 @@ class ci_mostrardatos extends onelogin_ci
             
             if($datos['id_estado'] == 'APRB' && $perfil_funcional_asoc == null) {
                 
-                if(!$es_usuario) {
+                if(!$es_usuario && !$usuario_creado) {
                     
                     $nombre = $datos['nombre'].' '.$datos['apellido'];
                     
