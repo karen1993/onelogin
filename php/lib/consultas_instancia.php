@@ -396,6 +396,15 @@ class consultas_instancia
                 return false;
             }
         }
+        
+        static function get_mail_usuarios() 
+        {
+            $email = quote($email);
+            $sql = "SELECT email
+                    FROM apex_usuario ";
+            return toba::db()->consultar($sql);
+            
+        }
 	
 	//---------------------------------------------------------------------
 	//------ Perfil Funcional ---------------------------------------------
@@ -602,14 +611,14 @@ class consultas_instancia
             return $existe;
         }
         
-        static function existe_solicitud($usuario,$email,$modulo)
+        static function existe_solicitud($email,$modulo)
         {
             $sql = "SELECT
                     nombre_usuario,
                     correo,
                     id_sistema
                 FROM solicitud_usuario  
-                WHERE nombre_usuario = '$usuario' AND correo = '$email' AND id_sistema = '$modulo'";
+                WHERE correo = '$email' AND id_sistema = '$modulo'";
 //            print_r(toba::db('onelogin_solicitud')->consultar($sql));            exit();
             return toba::db('onelogin_solicitud')->consultar($sql);
             
