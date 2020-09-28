@@ -60,30 +60,35 @@ class ci_solicitud_usuarios extends onelogin_ci
                 }
                 $nombre = $this->convertir($nombre);
                 $usuario = strtolower($nombre[0].$apellido);
-                $es_usuario = consultas_instancia::get_es_usuario($datos['correo']);
-                $usuario_en_solicitud = consultas_instancia::existe_usuario_solicitud($usuario);
-                $nomb_usuario_existente = consultas_instancia::get_existe_usuario($usuario);
-                $num = 01;
-                if(!$es_usuario) {
-                    while($nomb_usuario_existente == 1 || $usuario_en_solicitud == 1)
-                    {
-                        $usuario = $usuario.$num;
-                        $nomb_usuario_existente = consultas_instancia::get_existe_usuario($usuario);
-                        $usuario_en_solicitud = consultas_instancia::existe_usuario_solicitud($usuario);
-                        $num++;
-                    }
-                    $datos['nombre_usuario'] = $usuario;
-                    
-                    $datos['clave'] = $nombre.'.'.date('Y');
-                    $this->dep('datos')->tabla('solicitud_usuario')->set($datos);
-                    $this->dep('datos')->tabla('solicitud_usuario')->sincronizar();
-                    $this->dep('datos')->tabla('solicitud_usuario')->resetear();
-                    
-                    echo '<script language="javascript">alert("La solicitud de usuario se ha realizado correctamente. En breve recibira un mail para la confirmacion de la solicitud");window.location.href="?ai=onelogin||1000292&tcm=previsualizacion&tm=1"</script>';
+                $solicitud_existente = consultas_instancia::existe_solicitud($usuario,$datos['correo'],$datos['id_sistema']);
+//                print_r($datos['id_sistema']);                exit();
+                if($solicitud_existente != null) {
+                    echo utf8_decode('<script language="javascript">alert("Usted ya tiene una solicitud pendiente, aguarde a que la misma sea atendida y recibirá un email con la información correspondiente");window.location.href="?ai=onelogin||1000292&tcm=previsualizacion&tm=1"</script>');
                 } else {
-                    echo '<script language="javascript">alert("Usted ya tiene un usuario, ingrese al sistema y complete el formulario de solicitud correspondiente");window.location.href="?ai=onelogin||1000292&tcm=previsualizacion&tm=1"</script>';
-                }
-                          
+                    $es_usuario = consultas_instancia::get_es_usuario($datos['correo']);
+                    $usuario_en_solicitud = consultas_instancia::existe_usuario_solicitud($usuario);
+                    $nomb_usuario_existente = consultas_instancia::get_existe_usuario($usuario);
+                    $num = 01;
+                    if(!$es_usuario) {
+                        while($nomb_usuario_existente == 1 || $usuario_en_solicitud == 1)
+                        {
+                            $usuario = $usuario.$num;
+                            $nomb_usuario_existente = consultas_instancia::get_existe_usuario($usuario);
+                            $usuario_en_solicitud = consultas_instancia::existe_usuario_solicitud($usuario);
+                            $num++;
+                        }
+                        $datos['nombre_usuario'] = $usuario;
+                    
+                        $datos['clave'] = $nombre.'.'.date('Y');
+                        $this->dep('datos')->tabla('solicitud_usuario')->set($datos);
+                        $this->dep('datos')->tabla('solicitud_usuario')->sincronizar();
+                        $this->dep('datos')->tabla('solicitud_usuario')->resetear();
+                    
+                        echo '<script language="javascript">alert("La solicitud de usuario se ha realizado correctamente. En breve recibira un mail para la confirmacion de la solicitud");window.location.href="?ai=onelogin||1000292&tcm=previsualizacion&tm=1"</script>';
+                    } else {
+                        echo '<script language="javascript">alert("Usted ya tiene un usuario, ingrese al sistema y complete el formulario de solicitud correspondiente");window.location.href="?ai=onelogin||1000292&tcm=previsualizacion&tm=1"</script>';
+                    }
+                }              
         } 
            
 
