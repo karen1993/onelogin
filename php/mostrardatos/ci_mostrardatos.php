@@ -160,7 +160,7 @@ class ci_mostrardatos extends onelogin_ci
                         $apellido = $apellido.$cadena[$i];
                         $i++;
                 }
-                $solicitud_existente = consultas_instancia::existe_solicitud($usuario,$email,$datos['id_sistema']);
+                $solicitud_existente = consultas_instancia::existe_solicitud($email,$datos['id_sistema']);
                 if($solicitud_existente != null) {
                     $this->set_pantalla('pant_edicion');
                     throw new toba_error(utf8_decode('Usted ya tiene una solicitud pendiente, aguarde a que la misma sea atendida y recibirá un email con la información correspondiente'));
