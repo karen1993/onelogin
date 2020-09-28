@@ -133,10 +133,12 @@ class ci_mostrardatos extends onelogin_ci
         function evt__form_solicitud__alta($datos)
         {
             $usuario = toba::usuario()->get_id();
-                
+            $email = toba::instancia()->get_info_usuario($usuario)['email'];  
+            
             $perfil_funcional_asociado = consultas_instancia::get_lista_grupos_acceso_usuario_proyecto($usuario,$datos['id_sistema']);
             if($perfil_funcional_asociado != null) {
-                toba::notificacion()->agregar(utf8_decode('El usuario ya tiene asignado un perfil funcional dentro del sistema.'), 'info');
+                $this->set_pantalla('pant_edicion');
+                throw new toba_error(utf8_decode('El usuario ya tiene asignado un perfil funcional dentro del sistema.'), 'info');
             }
             else {
                 $nombre_usuario = toba::usuario()->get_nombre();
@@ -158,20 +160,25 @@ class ci_mostrardatos extends onelogin_ci
                         $apellido = $apellido.$cadena[$i];
                         $i++;
                 }
-                
-                $datos['nombre_usuario'] = $usuario;          
-                $datos['nombre'] = strtolower($nombre);
-                $datos['apellido'] = strtolower($apellido);
-                $datos['id_estado'] = 'PEND';
-                $fecha = date('d-m-y');
-                $datos['timestamp'] = $fecha;
+                $solicitud_existente = consultas_instancia::existe_solicitud($usuario,$email,$datos['id_sistema']);
+                if($solicitud_existente != null) {
+                    $this->set_pantalla('pant_edicion');
+                    throw new toba_error(utf8_decode('Usted ya tiene una solicitud pendiente, aguarde a que la misma sea atendida y recibirá un email con la información correspondiente'));
+                } else {
+                    $datos['nombre_usuario'] = $usuario;          
+                    $datos['nombre'] = strtolower($nombre);
+                    $datos['apellido'] = strtolower($apellido);
+                    $datos['id_estado'] = 'PEND';
+                    $datos['correo'] = $email;
+                    $fecha = date('d-m-Y H:i:s');
+                    $datos['timestamp'] = $fecha;
         
-                $this->dep('datos')->tabla('solicitud_usuario')->set($datos);
-                $this->dep('datos')->tabla('solicitud_usuario')->sincronizar();
-                $this->dep('datos')->tabla('solicitud_usuario')->resetear();
+                    $this->dep('datos')->tabla('solicitud_usuario')->set($datos);
+                    $this->dep('datos')->tabla('solicitud_usuario')->sincronizar();
+                    $this->dep('datos')->tabla('solicitud_usuario')->resetear();
                 
-                toba::notificacion()->agregar(utf8_decode('La solicitud se ha realizado correctamente.'), 'info');
-                
+                    toba::notificacion()->agregar(utf8_decode('La solicitud se ha realizado correctamente.'), 'info');
+                }
             }
             
         }

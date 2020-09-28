@@ -601,5 +601,18 @@ class consultas_instancia
             }
             return $existe;
         }
+        
+        static function existe_solicitud($usuario,$email,$modulo)
+        {
+            $sql = "SELECT
+                    nombre_usuario,
+                    correo,
+                    id_sistema
+                FROM solicitud_usuario  
+                WHERE nombre_usuario = '$usuario' AND correo = '$email' AND id_sistema = '$modulo'";
+//            print_r(toba::db('onelogin_solicitud')->consultar($sql));            exit();
+            return toba::db('onelogin_solicitud')->consultar($sql);
+            
+        }
 }
 ?>
