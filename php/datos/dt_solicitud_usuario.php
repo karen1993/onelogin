@@ -32,7 +32,7 @@ class dt_solicitud_usuario extends onelogin_datos_tabla
             $perfil=null;
         }
         
-        if (!is_null($where)) {
+        if (!is_null($where) && $where != 1) {
             if(strpos($where, 'OR') || strpos($where, 'id_sistema')) {
                 if(strpos($where, 'id_estado')) {
                     $where = str_replace('id_estado', 's.id_estado', $where);
@@ -58,9 +58,9 @@ class dt_solicitud_usuario extends onelogin_datos_tabla
             }
             
         }
-        $sql = "SELECT  s.id_solicitud, s.nombre_usuario, s.id_sistema, est.estado, timestamp 
-                FROM solicitud_usuario as s INNER JOIN estado as est ON (s.id_estado = est.id_estado) " . $where;
         
+        $sql = "SELECT  s.id_solicitud, s.nombre_usuario, s.id_sistema, est.estado, s.timestamp 
+                FROM solicitud_usuario as s INNER JOIN estado as est ON (s.id_estado = est.id_estado) " . $where;
         return toba::db('onelogin_solicitud')->consultar($sql);
     }
 }
